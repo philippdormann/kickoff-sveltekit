@@ -43,17 +43,15 @@
 
 <Toaster />
 
-<div class="flex w-full flex-1 flex-col font-primary">
-  <Navbar user={data.user} />
+<Navbar user={data.user} />
 
-  <main class="container mx-auto flex flex-1 flex-col p-4 md:px-8 md:py-4">
-    <slot />
+<main class="container mx-auto flex flex-1 flex-col p-4 md:px-8 md:py-4">
+  <slot />
 
-    <div class="fixed bottom-5 right-0">
-      <ThemeSwitcher />
-    </div>
-  </main>
-</div>
+  <div class="fixed bottom-5 right-0">
+    <ThemeSwitcher />
+  </div>
+</main>
 
 {#if $flash}
   <div class="fixed bottom-0 w-full overflow-hidden">

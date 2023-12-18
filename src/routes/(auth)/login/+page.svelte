@@ -49,13 +49,7 @@
     >
       <Form.Field name="email" {config} let:constraints>
         <Form.Label>Email</Form.Label>
-        <Form.Input
-          id="email"
-          type="email"
-          autocapitalize="none"
-          autocorrect="off"
-          {...constraints}
-        />
+        <Form.Input type="email" autocapitalize="none" autocorrect="off" {...constraints} />
         <Form.Validation />
       </Form.Field>
 

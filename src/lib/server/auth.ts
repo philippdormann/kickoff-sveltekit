@@ -26,6 +26,7 @@ export const auth = lucia({
   sessionCookie: {
     name: '__auth_session',
     attributes: {
+      path: '/',
       sameSite: 'strict'
     }
   }
