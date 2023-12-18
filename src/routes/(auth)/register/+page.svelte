@@ -5,9 +5,9 @@
   import * as flashModule from 'sveltekit-flash-message/client';
 
   // Components
-  import * as Form from '$lib/components/ui/form';
-  import * as Card from '$lib/components/ui/card';
-  import { Button } from '$lib/components/ui/button';
+  import * as Form from '$components/ui/form';
+  import * as Card from '$components/ui/card';
+  import { Button } from '$components/ui/button';
 
   // Assets
   import { Reload, GithubLogo, LinkedinLogo } from 'radix-icons-svelte';

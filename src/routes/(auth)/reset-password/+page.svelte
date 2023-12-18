@@ -5,8 +5,8 @@
   import * as flashModule from 'sveltekit-flash-message/client';
 
   // Components
-  import * as Form from '$lib/components/ui/form';
-  import * as Card from '$lib/components/ui/card';
+  import * as Form from '$components/ui/form';
+  import * as Card from '$components/ui/card';
 
   // Assets
   import { Reload } from 'radix-icons-svelte';

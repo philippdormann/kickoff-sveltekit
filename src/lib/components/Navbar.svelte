@@ -8,7 +8,7 @@
   import { HamburgerMenu, Exit, Cross1 } from 'radix-icons-svelte';
 
   // Components
-  import { Button } from '$lib/components/ui/button';
+  import { Button } from '$components/ui/button';
 
   export let user: object | null = null;
   let isMenuOpen = false;

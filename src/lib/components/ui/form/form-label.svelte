@@ -2,7 +2,7 @@
   import type { Label as LabelPrimitive } from 'bits-ui';
   import { getFormField } from 'formsnap';
   import { cn } from '$lib/utils/utils';
-  import { Label } from '$lib/components/ui/label';
+  import { Label } from '$components/ui/label';
 
   type $$Props = LabelPrimitive.Props;
 

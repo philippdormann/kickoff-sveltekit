@@ -1,6 +1,6 @@
 <script lang="ts">
   import { Form as FormPrimitive } from 'formsnap';
-  import { buttonVariants } from '$lib/components/ui/button';
+  import { buttonVariants } from '$components/ui/button';
   import { cn } from '$lib/utils/utils';
   import { CaretSort } from 'radix-icons-svelte';
   import type { HTMLSelectAttributes } from 'svelte/elements';

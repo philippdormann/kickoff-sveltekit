@@ -1,7 +1,7 @@
 import { Form as FormPrimitive, getFormField } from 'formsnap';
 import type { Writable } from 'svelte/store';
-import * as RadioGroupComp from '$lib/components/ui/radio-group';
-import * as SelectComp from '$lib/components/ui/select';
+import * as RadioGroupComp from '$components/ui/radio-group';
+import * as SelectComp from '$components/ui/select';
 import Item from './form-item.svelte';
 import Input from './form-input.svelte';
 import Textarea from './form-textarea.svelte';

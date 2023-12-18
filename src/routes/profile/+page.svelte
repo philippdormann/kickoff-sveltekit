@@ -13,11 +13,11 @@
 
   // Components
   import FormWrapper from '$components/FormWrapper.svelte';
-  import * as Form from '$lib/components/ui/form';
-  import { Button } from '$lib/components/ui/button';
-  import * as AlertDialog from '$lib/components/ui/alert-dialog';
-  import * as Alert from '$lib/components/ui/alert';
-  import { Separator } from '$lib/components/ui/separator';
+  import * as Form from '$components/ui/form';
+  import { Button } from '$components/ui/button';
+  import * as AlertDialog from '$components/ui/alert-dialog';
+  import * as Alert from '$components/ui/alert';
+  import { Separator } from '$components/ui/separator';
 
   // Assets
   import avatarPlaceholder from '$lib/assets/avatar.png';
