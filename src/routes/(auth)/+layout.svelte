@@ -2,7 +2,7 @@
   import FormWrapper from '$components/FormWrapper.svelte';
 </script>
 
-<div class="grid flex-1 content-center pb-12 md:pb-0">
+<div class="md:grid flex-1 content-center">
   <FormWrapper>
     <slot />
   </FormWrapper>
