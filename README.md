@@ -1,5 +1,7 @@
 # Kickoff SvelteKit
 
+![Kickoff Sveltekit](https://ks.ns-projects.com/_app/immutable/assets/meta.5mv8NfE2.png)
+
 [Demo](https://ks.ns-projects.com)
 
 - 👍 SvelteKit
