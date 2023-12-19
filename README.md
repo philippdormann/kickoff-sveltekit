@@ -1,6 +1,6 @@
 # Kickoff SvelteKit
 
-[Demo](https://kickoff-sveltekit.vercel.app)
+[Demo](https://ks.ns-projects.com)
 
 - 👍 SvelteKit
 - 💨 TailwindCSS (with prettier & class sorting support)
