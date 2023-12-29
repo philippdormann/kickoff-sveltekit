@@ -52,38 +52,40 @@
 
   <!-- Mobile Dropdown Menu -->
   {#if isMenuOpen}
-    <div transition:slide class="flex w-full flex-col gap-2 bg-accent p-4">
-      {#if !user}
-        <Button
-          href="/login"
-          variant="link"
-          on:click={toggleMenuState}
-          class="text-accent-foreground">Login</Button
-        >
-        <Button
-          href="/register"
-          variant="link"
-          on:click={toggleMenuState}
-          class="text-accent-foreground">Register</Button
-        >
-      {:else}
-        <Button
-          href="/profile"
-          variant="link"
-          on:click={toggleMenuState}
-          class="text-accent-foreground">Profile</Button
-        >
-        <Button
-          form="logout"
-          type="submit"
-          variant="link"
-          on:click={toggleMenuState}
-          class="text-accent-foreground"
-        >
-          <Exit class="mr-1 h-4 w-4" />
-          Log out
-        </Button>
-      {/if}
+    <div transition:slide class="mx-2 rounded-lg border-2 border-border">
+      <div class="flex w-full flex-col gap-2 p-4">
+        {#if !user}
+          <Button
+            href="/login"
+            variant="link"
+            on:click={toggleMenuState}
+            class="text-accent-foreground">Login</Button
+          >
+          <Button
+            href="/register"
+            variant="link"
+            on:click={toggleMenuState}
+            class="text-accent-foreground">Register</Button
+          >
+        {:else}
+          <Button
+            href="/profile"
+            variant="link"
+            on:click={toggleMenuState}
+            class="text-accent-foreground">Profile</Button
+          >
+          <Button
+            form="logout"
+            type="submit"
+            variant="link"
+            on:click={toggleMenuState}
+            class="text-accent-foreground"
+          >
+            <Exit class="mr-1 h-4 w-4" />
+            Log out
+          </Button>
+        {/if}
+      </div>
     </div>
   {/if}
 
