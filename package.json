@@ -45,7 +45,6 @@
     "radix-icons-svelte": "^1.2.1",
     "svelte": "^4.2.8",
     "svelte-check": "^3.6.2",
-    "svelte-french-toast": "^1.2.0",
     "sveltekit-superforms": "^1.13.1",
     "tailwind-merge": "^2.2.0",
     "tailwind-variants": "^0.1.20",
@@ -66,6 +65,7 @@
     "lucia": "^2.7.6",
     "pg": "^8.11.3",
     "svelte-email": "^0.0.4",
+    "svelte-sonner": "^0.3.10",
     "sveltekit-flash-message": "^2.3.0"
   }
 }

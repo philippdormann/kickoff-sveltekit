@@ -60,7 +60,9 @@ const reset: Action = async (event) => {
   const form = await superValidate(event.request, resetPasswordSchema);
 
   if (!form.valid) {
-    return setFormFail(form, { removeSensitiveData: ['password', 'passwordConfirmation'] });
+    return setFormFail(form, {
+      removeSensitiveData: ['password', 'passwordConfirmation']
+    });
   } else {
     const { email, token, password, passwordConfirmation } = form.data;
 

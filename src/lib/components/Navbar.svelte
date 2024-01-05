@@ -22,7 +22,9 @@
 <nav>
   <div class="flex items-center justify-between p-4">
     <div class="flex-1 px-2">
-      <a href="/" class="btn-ghost btn text-xl font-bold normal-case">Kickoff SvelteKit</a>
+      <a href="/" class="btn-ghost btn text-xl font-bold normal-case"
+        >Kickoff SvelteKit</a
+      >
     </div>
 
     <div class="hidden gap-2 lg:inline-flex">

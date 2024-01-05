@@ -1,5 +1,8 @@
 // Avatar file validations
-export function validateAvatarFile(avatarFile: File): { valid: boolean; errors: string[] } {
+export function validateAvatarFile(avatarFile: File): {
+  valid: boolean;
+  errors: string[];
+} {
   let valid = true;
   const errors = [];
 

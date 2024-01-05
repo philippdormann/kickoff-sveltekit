@@ -5,7 +5,11 @@ import { setFlash } from 'sveltekit-flash-message/server';
 
 export const setFormFail = (
   form: any,
-  opts?: { status?: NumericRange<400, 599>; removeSensitiveData?: string[]; event?: RequestEvent }
+  opts?: {
+    status?: NumericRange<400, 599>;
+    removeSensitiveData?: string[];
+    event?: RequestEvent;
+  }
 ) => {
   if (!form) return;
   if (opts?.removeSensitiveData) {
@@ -18,7 +22,10 @@ export const setFormFail = (
 
   if (opts?.event)
     setFlash(
-      { type: 'error', message: 'Something went wrong. Please try again later.' },
+      {
+        type: 'error',
+        message: 'Something went wrong. Please try again later.'
+      },
       opts.event
     );
 
@@ -28,7 +35,11 @@ export const setFormFail = (
 export const setFormError = (
   form: any,
   text: string,
-  opts?: { status?: NumericRange<400, 599>; field?: string; removeSensitiveData?: string[] },
+  opts?: {
+    status?: NumericRange<400, 599>;
+    field?: string;
+    removeSensitiveData?: string[];
+  },
   event?: RequestEvent
 ) => {
   if (!form) return;
@@ -42,5 +53,6 @@ export const setFormError = (
   }
 
   if (event) setFlash({ type: 'error', message: text }, event);
-  if (opts?.field) return setError(form, opts?.field, text, { status: opts?.status ?? 400 });
+  if (opts?.field)
+    return setError(form, opts?.field, text, { status: opts?.status ?? 400 });
 };

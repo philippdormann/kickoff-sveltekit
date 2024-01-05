@@ -28,7 +28,8 @@
   <Card.Header class="space-y-1">
     <Card.Title class="text-2xl">Create a New Password</Card.Title>
     <Card.Description
-      >Enter a new password for <strong>{data.form.data.email}</strong></Card.Description
+      >Enter a new password for <strong>{data.form.data.email}</strong
+      ></Card.Description
     >
   </Card.Header>
   <Card.Content class="grid gap-4">
@@ -42,11 +43,21 @@
       let:delayed
     >
       <Form.Field name="email" {config} let:value>
-        <Form.Input type="hidden" value={value ?? ''} aria-hidden="true" required />
+        <Form.Input
+          type="hidden"
+          value={value ?? ''}
+          aria-hidden="true"
+          required
+        />
       </Form.Field>
 
       <Form.Field name="token" {config} let:value>
-        <Form.Input type="hidden" value={value ?? ''} aria-hidden="true" required />
+        <Form.Input
+          type="hidden"
+          value={value ?? ''}
+          aria-hidden="true"
+          required
+        />
       </Form.Field>
 
       <Form.Field name="password" {config} let:constraints>

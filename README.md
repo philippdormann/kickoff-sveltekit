@@ -27,7 +27,6 @@ Clone this repository, set the environment variables, and kickoff your project!
 - [💨 TailwindCSS](https://tailwindcss.com/)
 - [💾 Drizzle ORM (PostgreSQL)](https://orm.drizzle.team/)
 - [🎨 shadcn-svelte](https://www.shadcn-svelte.com/)
-- [🥪 Svelte French Toast](https://svelte-french-toast.com/)
 - [👥 Lucia (Registraion, Login/Logout, Password Reset)](https://lucia-auth.com/)
 - [📬 SendGrid API](https://sendgrid.com/en-us)
 - [⛔ Zod](https://zod.dev/)

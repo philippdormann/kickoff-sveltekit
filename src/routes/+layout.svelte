@@ -11,7 +11,7 @@
   // Components
   import SEO from '$components/SEO.svelte';
   import Navbar from '$components/Navbar.svelte';
-  import { Toaster } from 'svelte-french-toast';
+  import { Toaster } from '$lib/components/ui/sonner';
   import Flash from '$components/Flash.svelte';
   import ThemeSwitcher from '$components/ThemeSwitcher.svelte';
 
@@ -41,7 +41,7 @@
 
 <SEO {...$page.data.metadata} url={$page.url.href} />
 
-<Toaster />
+<Toaster position="bottom-center" closeButton />
 
 <Navbar user={data.user} />
 

@@ -1,4 +1,11 @@
-import { pgTable, pgEnum, bigint, text, timestamp, uniqueIndex } from 'drizzle-orm/pg-core';
+import {
+  pgTable,
+  pgEnum,
+  bigint,
+  text,
+  timestamp,
+  uniqueIndex
+} from 'drizzle-orm/pg-core';
 
 export const role = pgEnum('role', ['ADMIN', 'MEMBER']);
 

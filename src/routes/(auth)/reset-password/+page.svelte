@@ -41,8 +41,15 @@
     >
       <Form.Field name="email" {config} let:constraints>
         <Form.Label>Email</Form.Label>
-        <Form.Input type="email" autocapitalize="none" autocorrect="off" {...constraints} />
-        <Form.Description class="mt-1.5">We will send you a password reset link</Form.Description>
+        <Form.Input
+          type="email"
+          autocapitalize="none"
+          autocorrect="off"
+          {...constraints}
+        />
+        <Form.Description class="mt-1.5"
+          >We will send you a password reset link</Form.Description
+        >
         <Form.Validation />
       </Form.Field>
 

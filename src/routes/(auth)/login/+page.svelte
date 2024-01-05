@@ -35,7 +35,9 @@
 <Card.Root>
   <Card.Header class="space-y-1">
     <Card.Title class="text-2xl">Login</Card.Title>
-    <Card.Description>Enter your email and password below to access your account</Card.Description>
+    <Card.Description
+      >Enter your email and password below to access your account</Card.Description
+    >
   </Card.Header>
   <Card.Content class="grid gap-4">
     <Form.Root
@@ -49,7 +51,12 @@
     >
       <Form.Field name="email" {config} let:constraints>
         <Form.Label>Email</Form.Label>
-        <Form.Input type="email" autocapitalize="none" autocorrect="off" {...constraints} />
+        <Form.Input
+          type="email"
+          autocapitalize="none"
+          autocorrect="off"
+          {...constraints}
+        />
         <Form.Validation />
       </Form.Field>
 
@@ -72,7 +79,9 @@
         <span class="w-full border-t" />
       </div>
       <div class="relative flex justify-center text-xs uppercase">
-        <span class="bg-card px-2 text-muted-foreground"> Or continue with </span>
+        <span class="bg-card px-2 text-muted-foreground">
+          Or continue with
+        </span>
       </div>
     </div>
 

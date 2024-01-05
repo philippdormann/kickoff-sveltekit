@@ -61,10 +61,14 @@ const edit: Action = async (event) => {
         });
       } catch (error) {
         console.log(error);
-        return setFormError(form, 'Something went wrong. Please try again later.', {
-          status: 500,
-          field: 'avatar'
-        });
+        return setFormError(
+          form,
+          'Something went wrong. Please try again later.',
+          {
+            status: 500,
+            field: 'avatar'
+          }
+        );
       }
     }
 

@@ -10,7 +10,10 @@ test('should create a new user', async ({ page }) => {
   await page.fill('input[name="passwordConfirmation"]', 'test1234');
   await page.click('button[type="submit"]');
   await page.waitForTimeout(1500);
-  const user = await db.select().from(users).where(eq(users.email, 'test@test.com'));
+  const user = await db
+    .select()
+    .from(users)
+    .where(eq(users.email, 'test@test.com'));
   expect(user).toHaveLength(1);
   expect(user[0].email).toBe('test@test.com');
 });

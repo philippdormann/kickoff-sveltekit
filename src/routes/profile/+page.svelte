@@ -9,7 +9,7 @@
   import { error } from '@sveltejs/kit';
   import { validateAvatarFile } from '$lib/validations/files.js';
   import { fade } from 'svelte/transition';
-  import toast from 'svelte-french-toast';
+  import { toast } from 'svelte-sonner';
 
   // Components
   import FormWrapper from '$components/FormWrapper.svelte';
@@ -60,7 +60,8 @@
     fileUploadStatus = 'ready';
 
     try {
-      const avatarInputField: HTMLInputElement = event.target as HTMLInputElement;
+      const avatarInputField: HTMLInputElement =
+        event.target as HTMLInputElement;
       if (!avatarInputField.files) return;
       const avatarFile = avatarInputField.files[0];
 
@@ -148,7 +149,8 @@
     <h3 class="self-start text-lg font-semibold uppercase">User Settings</h3>
     <div
       id="avatar-preview"
-      class="flex shrink-0 items-center justify-center p-2 {fileUploadStatus === 'uploading'
+      class="flex shrink-0 items-center justify-center p-2 {fileUploadStatus ===
+      'uploading'
         ? 'loading loading-infinity loading-lg text-primary'
         : ''}}"
     >
@@ -202,7 +204,10 @@
 
     {#if fileUploadStatus === 'failed'}
       {#each fileUploadErrors as error}
-        <Alert.Root variant="destructive" class="inline-flex items-center gap-2">
+        <Alert.Root
+          variant="destructive"
+          class="inline-flex items-center gap-2"
+        >
           <div>
             <CrossCircled class="h-6 w-6" />
           </div>
@@ -217,14 +222,15 @@
 
     <AlertDialog.Root>
       <AlertDialog.Trigger class="w-full">
-        <Button variant="destructive" class="my-2 w-full">Delete Account</Button>
+        <Button variant="destructive" class="my-2 w-full">Delete Account</Button
+        >
       </AlertDialog.Trigger>
       <AlertDialog.Content>
         <AlertDialog.Header>
           <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
           <AlertDialog.Description>
-            This action cannot be undone. This will permanently delete your account and remove your
-            data from our servers.
+            This action cannot be undone. This will permanently delete your
+            account and remove your data from our servers.
           </AlertDialog.Description>
         </AlertDialog.Header>
         <AlertDialog.Footer>

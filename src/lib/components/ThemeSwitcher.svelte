@@ -39,8 +39,10 @@
   {#if preferredTheme === themes.dark}
     <Button
       id="light-theme-switcher"
+      type="submit"
       aria-label="Switch to light theme"
-      formaction="/theme?/set&theme={themes.light}&redirect={$page.url.pathname}"
+      formaction="/theme?/set&theme={themes.light}&redirect={$page.url
+        .pathname}"
       variant="outline"
       size="icon"
       class="rounded-r-none border-r-0"
@@ -50,6 +52,7 @@
   {:else}
     <Button
       id="dark-theme-switcher"
+      type="submit"
       aria-label="Switch to dark theme"
       formaction="/theme?/set&theme={themes.dark}&redirect={$page.url.pathname}"
       variant="outline"

@@ -40,7 +40,10 @@ const requestPasswordReset: Action = async (event) => {
 
   const { email } = form.data;
 
-  const getUsers = await db.select({ id: users.id }).from(users).where(eq(users.email, email));
+  const getUsers = await db
+    .select({ id: users.id })
+    .from(users)
+    .where(eq(users.email, email));
   const user = getUsers[0];
 
   if (!user) {
@@ -76,11 +79,15 @@ const requestPasswordReset: Action = async (event) => {
 
     await auth.invalidateAllUserSessions(user.id);
 
-    const url = new URL(`${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`);
+    const url = new URL(
+      `${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`
+    );
     await sendEmail(email, 'Reset Password', 'ResetPassword', { url: url });
   } catch (error) {
     console.log(error);
-    return setFormError(form, 'Something went wrong. Please try again later.', { status: 500 });
+    return setFormError(form, 'Something went wrong. Please try again later.', {
+      status: 500
+    });
   }
 
   throw redirect(

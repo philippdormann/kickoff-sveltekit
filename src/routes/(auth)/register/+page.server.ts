@@ -31,7 +31,9 @@ const register: Action = async (event) => {
   const form = await superValidate(event.request, registrationSchema);
 
   if (!form.valid) {
-    return setFormFail(form, { removeSensitiveData: ['password', 'passwordConfirmation'] });
+    return setFormFail(form, {
+      removeSensitiveData: ['password', 'passwordConfirmation']
+    });
   } else {
     const { email, password, passwordConfirmation } = form.data;
 
@@ -47,7 +49,10 @@ const register: Action = async (event) => {
       );
     }
 
-    const getUsers = await db.select().from(users).where(eq(users.email, email));
+    const getUsers = await db
+      .select()
+      .from(users)
+      .where(eq(users.email, email));
     const user = getUsers[0];
 
     if (user) {
