@@ -7,11 +7,15 @@ export const load = async () => {
 
 export const actions = {
   default: async (event) => {
-    const session = await event.locals.auth.validate();
-    if (!session) throw redirect(302, '/');
+    // redirect to `/` if logged in
+    if (!event.locals.session) throw redirect(302, '/');
 
-    await auth.invalidateSession(session.sessionId); // invalidate session
-    event.locals.auth.setSession(null); // remove cookie
+    await auth.invalidateSession(event.locals.session.id);
+    const sessionCookie = auth.createBlankSessionCookie();
+    event.cookies.set(sessionCookie.name, sessionCookie.value, {
+      path: '.',
+      ...sessionCookie.attributes
+    });
 
     throw redirect(
       '/',

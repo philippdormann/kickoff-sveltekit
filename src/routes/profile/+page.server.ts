@@ -5,11 +5,13 @@ import { superValidate, superValidateSync } from 'sveltekit-superforms/server';
 import { editAccountSchema } from '$lib/validations/auth';
 import { setFormError } from '$lib/utils/helpers/forms';
 import { redirect } from 'sveltekit-flash-message/server';
+import db from '$lib/server/database';
+import { users } from '$lib/db/models/auth';
+import { eq } from 'drizzle-orm';
 
 export async function load({ locals }) {
   // redirect to `/` if logged in
-  const session = await locals.auth.validate();
-  if (!session) throw redirect(302, '/');
+  if (!locals.user) throw redirect(302, '/');
 
   const form = superValidateSync(editAccountSchema);
 
@@ -27,8 +29,7 @@ const edit: Action = async (event) => {
   if (!form.valid) {
     return fail(400, { form });
   } else {
-    const session = await event.locals.auth.validate();
-    const user = session && session.user;
+    const user = event.locals.user;
 
     if (!user) {
       throw redirect(
@@ -56,9 +57,7 @@ const edit: Action = async (event) => {
 
     if (avatar && typeof avatar === 'string') {
       try {
-        await auth.updateUserAttributes(user.userId, {
-          avatar: avatar
-        });
+        await db.update(users).set({ avatar }).where(eq(users.id, user.id));
       } catch (error) {
         console.log(error);
         return setFormError(
@@ -77,27 +76,38 @@ const edit: Action = async (event) => {
 };
 
 const cancel: Action = async (event) => {
-  const session = await event.locals.auth.validate();
-  const user = session && session.user;
+  const user = event.locals.user;
 
-  console.log(session, user);
+  if (user) {
+    try {
+      await auth.invalidateUserSessions(user.id);
+      const sessionCookie = auth.createBlankSessionCookie();
+      event.cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: '.',
+        ...sessionCookie.attributes
+      });
+    } catch {
+      throw redirect(
+        {
+          type: 'error',
+          message: 'Something went wrong. Please try again later.'
+        },
+        event
+      );
+    }
 
-  try {
-    auth.deleteUser(user.userId); // delete user
-  } catch {
-    throw redirect(
-      {
-        type: 'error',
-        message: 'Something went wrong. Please try again later.'
-      },
-      event
-    );
+    try {
+      await db.delete(users).where(eq(users.id, user.id));
+    } catch {
+      throw redirect(
+        {
+          type: 'error',
+          message: 'Something went wrong. Please try again later.'
+        },
+        event
+      );
+    }
   }
-
-  if (session) {
-    await auth.invalidateSession(session.sessionId); // invalidate session
-  }
-  event.locals.auth.setSession(null); // remove cookie
 
   throw redirect('/', { type: 'success', message: 'Account deleted.' }, event);
 };

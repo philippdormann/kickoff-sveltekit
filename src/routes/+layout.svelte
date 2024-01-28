@@ -21,7 +21,9 @@
   export let data;
 
   const flash = getFlash(page, {
-    clearAfterMs: 5000
+    clearOnNavigate: true,
+    clearAfterMs: 3000,
+    clearArray: true
   });
 
   if (browser) {

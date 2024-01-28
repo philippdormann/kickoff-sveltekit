@@ -68,6 +68,7 @@
           type="email"
           autocapitalize="none"
           autocorrect="off"
+          autocomplete="username"
           {...constraints}
         />
         <Form.Validation />
@@ -75,7 +76,11 @@
 
       <Form.Field name="password" {config} let:constraints>
         <Form.Label>Password</Form.Label>
-        <Form.Input type="password" {...constraints} />
+        <Form.Input
+          type="password"
+          autocomplete="new-password"
+          {...constraints}
+        />
         <Form.Validation />
       </Form.Field>
 

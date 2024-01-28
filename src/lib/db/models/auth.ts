@@ -1,7 +1,6 @@
 import {
   pgTable,
   pgEnum,
-  bigint,
   text,
   timestamp,
   uniqueIndex
@@ -10,10 +9,11 @@ import {
 export const role = pgEnum('role', ['ADMIN', 'MEMBER']);
 
 export const users = pgTable(
-  'users',
+  'user',
   {
     id: text('id').primaryKey(),
     email: text('email').unique(),
+    hashed_password: text('hashed_password'),
     role: text('role', { enum: ['ADMIN', 'MEMBER'] })
       .notNull()
       .default('MEMBER'),
@@ -28,25 +28,19 @@ export const users = pgTable(
   }
 );
 
-export const sessions = pgTable('sessions', {
+export const sessions = pgTable('session', {
   id: text('id').primaryKey(),
   userId: text('user_id')
     .notNull()
     .references(() => users.id),
-  activeExpires: bigint('active_expires', { mode: 'number' }).notNull(),
-  idleExpires: bigint('idle_expires', { mode: 'number' }).notNull()
-});
-
-export const keys = pgTable('keys', {
-  id: text('id').primaryKey(),
-  userId: text('user_id')
-    .notNull()
-    .references(() => users.id),
-  hashedPassword: text('hashed_password')
+  expiresAt: timestamp('expires_at', {
+    withTimezone: true,
+    mode: 'date'
+  }).notNull()
 });
 
 export const tokens = pgTable(
-  'tokens',
+  'token',
   {
     id: text('id').primaryKey(),
     userId: text('user_id')

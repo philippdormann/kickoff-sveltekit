@@ -1,5 +1,5 @@
 // Types
-import type { Action } from './$types.js';
+import type { Action } from './$types';
 
 // Utils
 import db from '$lib/server/database';
@@ -11,11 +11,12 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { registrationSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
+import { generateId } from 'lucia';
+import { Argon2id } from 'oslo/password';
 
 export async function load({ locals }) {
   // redirect to `/` if logged in
-  const session = await locals.auth.validate();
-  if (session) throw redirect(302, '/');
+  if (locals.user) throw redirect(302, '/');
 
   const form = await superValidate(registrationSchema);
 
@@ -67,26 +68,24 @@ const register: Action = async (event) => {
       );
     }
 
+    const userId = generateId(12);
+    const hashedPassword = await new Argon2id().hash(password);
+
     try {
-      await auth.createUser({
-        key: {
-          providerId: 'email',
-          providerUserId: email,
-          password
-        },
-        attributes: {
-          email
-        }
+      await db.insert(users).values({
+        id: userId,
+        email,
+        hashed_password: hashedPassword
       });
 
       // Automatically log in the user
       try {
-        const key = await auth.useKey('email', email.toLowerCase(), password);
-        const session = await auth.createSession({
-          userId: key.userId,
-          attributes: {}
+        const session = await auth.createSession(userId, {});
+        const sessionCookie = auth.createSessionCookie(session.id);
+        event.cookies.set(sessionCookie.name, sessionCookie.value, {
+          path: '.',
+          ...sessionCookie.attributes
         });
-        event.locals.auth.setSession(session);
       } catch (e: any) {
         console.log(e);
       }

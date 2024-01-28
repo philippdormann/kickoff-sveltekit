@@ -3,16 +3,18 @@ import type { Action, Actions } from './$types';
 
 // Utils
 import { auth } from '$lib/server/auth';
+import { eq } from 'drizzle-orm';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
 import { loginSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
-import { LuciaError } from 'lucia';
+import db from '$lib/server/database';
+import { users } from '$lib/db/models/auth';
+import { Argon2id } from 'oslo/password';
 
 export async function load({ locals }) {
   // redirect to `/` if logged in
-  const session = await locals.auth.validate();
-  if (session) throw redirect(302, '/');
+  if (locals.user) throw redirect(302, '/');
 
   const form = await superValidate(loginSchema);
 
@@ -33,17 +35,14 @@ const login: Action = async (event) => {
     const { password, email } = form.data;
 
     try {
-      const key = await auth.useKey('email', email.toLowerCase(), password);
-      const session = await auth.createSession({
-        userId: key.userId,
-        attributes: {}
-      });
-      event.locals.auth.setSession(session);
-    } catch (e: any) {
-      if (
-        (e instanceof LuciaError && e.message === 'AUTH_INVALID_KEY_ID') ||
-        e.message === 'AUTH_INVALID_PASSWORD'
-      ) {
+      const existingUsersArray = await db
+        .select()
+        .from(users)
+        .where(eq(users.email, email));
+
+      const user = existingUsersArray[0];
+
+      if (!user) {
         return setFormError(
           form,
           'Incorrect email or password',
@@ -55,6 +54,30 @@ const login: Action = async (event) => {
         );
       }
 
+      const validPassword = await new Argon2id().verify(
+        user.hashed_password!,
+        password
+      );
+
+      if (!validPassword) {
+        return setFormError(
+          form,
+          'Incorrect email or password',
+          {
+            status: 401,
+            removeSensitiveData: ['password']
+          },
+          event
+        );
+      }
+
+      const session = await auth.createSession(user.id, {});
+      const sessionCookie = auth.createSessionCookie(session.id);
+      event.cookies.set(sessionCookie.name, sessionCookie.value, {
+        path: '.',
+        ...sessionCookie.attributes
+      });
+    } catch (e: any) {
       return setFormError(
         form,
         'Something went wrong. Please try again later.',

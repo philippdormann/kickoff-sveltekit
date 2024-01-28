@@ -7,7 +7,7 @@
   import { editAccountSchema } from '$lib/validations/auth';
   import * as flashModule from 'sveltekit-flash-message/client';
   import { error } from '@sveltejs/kit';
-  import { validateAvatarFile } from '$lib/validations/files.js';
+  import { validateAvatarFile } from '$lib/validations/files';
   import { fade } from 'svelte/transition';
   import { toast } from 'svelte-sonner';
 

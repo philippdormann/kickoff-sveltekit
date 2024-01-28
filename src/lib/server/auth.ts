@@ -1,35 +1,41 @@
 // Packages
-import { lucia } from 'lucia';
-import { pg } from '@lucia-auth/adapter-postgresql';
+import { Lucia, TimeSpan } from 'lucia';
+import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
+
 // Utils
-import { pool } from '$lib/server/database';
-import { sveltekit } from 'lucia/middleware';
+import db from '$lib/server/database';
+import { users, sessions } from '$lib/db/models/auth';
 
 // Stores
 import { dev } from '$app/environment';
 
-export const auth = lucia({
-  adapter: pg(pool, {
-    user: 'users',
-    key: 'keys',
-    session: 'sessions'
-  }),
-  env: dev ? 'DEV' : 'PROD',
-  middleware: sveltekit(),
-  getUserAttributes: (data) => {
+const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
+
+export const auth = new Lucia(adapter, {
+  getUserAttributes: (attributes: DatabaseUserAttributes) => {
     return {
-      email: data.email,
-      avatar: data.avatar
+      email: attributes.email,
+      avatar: attributes.avatar
     };
   },
-  csrfProtection: true,
+  sessionExpiresIn: new TimeSpan(30, 'd'),
   sessionCookie: {
     name: '__auth_session',
     attributes: {
-      path: '/',
+      secure: !dev,
       sameSite: 'strict'
     }
   }
 });
 
-export type Auth = typeof auth;
+declare module 'lucia' {
+  interface Register {
+    Lucia: typeof auth;
+    DatabaseUserAttributes: DatabaseUserAttributes;
+  }
+}
+
+interface DatabaseUserAttributes {
+  email: string;
+  avatar: string;
+}

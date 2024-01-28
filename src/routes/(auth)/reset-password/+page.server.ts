@@ -14,12 +14,11 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { requestPasswordResetSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
-import { generateRandomString } from 'lucia/utils';
+import { generateId } from 'lucia';
 
 export async function load({ locals }) {
   // redirect user if already logged in
-  const session = await locals.auth.validate();
-  if (session) throw redirect(302, '/');
+  if (locals.user) throw redirect(302, '/');
 
   const form = await superValidate(requestPasswordResetSchema);
 
@@ -63,7 +62,7 @@ const requestPasswordReset: Action = async (event) => {
     const createOrUpdateTokens = await db
       .insert(tokens)
       .values({
-        id: generateRandomString(15),
+        id: generateId(12),
         userId: user.id,
         expiresAt: timestamp
       })
@@ -77,11 +76,12 @@ const requestPasswordReset: Action = async (event) => {
 
     const token = createOrUpdateTokens[0];
 
-    await auth.invalidateAllUserSessions(user.id);
+    await auth.invalidateUserSessions(user.id);
 
     const url = new URL(
       `${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`
     );
+
     await sendEmail(email, 'Reset Password', 'ResetPassword', { url: url });
   } catch (error) {
     console.log(error);

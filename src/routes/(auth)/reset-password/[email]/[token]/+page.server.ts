@@ -1,11 +1,11 @@
+import { Argon2id } from 'oslo/password';
 // Types
 import type { Action } from './$types';
 
 // Utils
 import db from '$lib/server/database';
-import { tokens } from '$lib/db/models/auth';
+import { tokens, users } from '$lib/db/models/auth';
 import { eq } from 'drizzle-orm';
-import { auth } from '$lib/server/auth';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -14,8 +14,7 @@ import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 
 export async function load({ locals, params }) {
   // redirect user if already logged in
-  const session = await locals.auth.validate();
-  if (session) throw redirect(302, '/');
+  if (locals.user) throw redirect(302, '/');
 
   const emailParam: string | null = params.email || null;
   const tokenParam: string | null = params.token || null;
@@ -78,7 +77,12 @@ const reset: Action = async (event) => {
       );
     }
     try {
-      await auth.updateKeyPassword('email', email, password);
+      await db
+        .update(users)
+        .set({
+          hashed_password: await new Argon2id().hash(password)
+        })
+        .where(eq(users.email, email));
     } catch (error) {
       return setFormError(
         form,
