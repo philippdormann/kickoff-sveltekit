@@ -48,6 +48,7 @@ const login: Action = async (event) => {
           'Incorrect email or password',
           {
             status: 401,
+            field: 'email',
             removeSensitiveData: ['password']
           },
           event
@@ -65,6 +66,7 @@ const login: Action = async (event) => {
           'Incorrect email or password',
           {
             status: 401,
+            field: 'email',
             removeSensitiveData: ['password']
           },
           event

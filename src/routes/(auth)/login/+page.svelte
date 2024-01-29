@@ -18,16 +18,10 @@
     validators: loginSchema,
     invalidateAll: true,
     delayMs: 500,
-    validationMethod: 'submit-only',
     multipleSubmits: 'prevent',
     syncFlashMessage: false,
     flashMessage: {
       module: flashModule
-    },
-    onResult({ formEl }) {
-      setTimeout(() => {
-        formEl.querySelector('input')?.focus();
-      }, 50);
     }
   };
 </script>
