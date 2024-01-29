@@ -2,14 +2,14 @@
 import type { Action, Actions } from './$types';
 
 // Utils
-import { auth } from '$lib/server/auth';
+import db from '$lib/server/database';
+import { users } from '$lib/db/models/auth';
 import { eq } from 'drizzle-orm';
+import { auth } from '$lib/server/auth';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
 import { loginSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
-import db from '$lib/server/database';
-import { users } from '$lib/db/models/auth';
 import { Argon2id } from 'oslo/password';
 
 export async function load({ locals }) {
