@@ -39,11 +39,12 @@ const requestPasswordReset: Action = async (event) => {
 
   const { email } = form.data;
 
-  const getUsers = await db
-    .select({ id: users.id })
-    .from(users)
-    .where(eq(users.email, email));
-  const user = getUsers[0];
+  const user = await db.query.users.findFirst({
+    where: eq(users.email, email),
+    columns: {
+      id: true
+    }
+  });
 
   if (!user) {
     // we send a success message even if the user doesn't exist to prevent email enumeration

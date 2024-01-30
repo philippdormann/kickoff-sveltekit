@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { drizzle } from 'drizzle-orm/node-postgres';
 import pg from 'pg';
+import * as authSchema from '../db/models/auth';
 
 export const pool = new pg.Pool({
   connectionString:
@@ -9,5 +10,5 @@ export const pool = new pg.Pool({
       : process.env.DATABASE_URL
 });
 
-const db = drizzle(pool);
+const db = drizzle(pool, { schema: { ...authSchema } });
 export default db;

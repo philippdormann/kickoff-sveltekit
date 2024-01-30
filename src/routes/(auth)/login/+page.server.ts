@@ -35,12 +35,9 @@ const login: Action = async (event) => {
     const { password, email } = form.data;
 
     try {
-      const existingUsersArray = await db
-        .select()
-        .from(users)
-        .where(eq(users.email, email));
-
-      const user = existingUsersArray[0];
+      const user = await db.query.users.findFirst({
+        where: eq(users.email, email)
+      });
 
       if (!user) {
         return setFormError(

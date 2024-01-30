@@ -50,13 +50,14 @@ const register: Action = async (event) => {
       );
     }
 
-    const getUsers = await db
-      .select()
-      .from(users)
-      .where(eq(users.email, email));
-    const user = getUsers[0];
+    const existingUser = await db.query.users.findFirst({
+      where: eq(users.email, email),
+      columns: {
+        id: true
+      }
+    });
 
-    if (user) {
+    if (existingUser) {
       return setFormError(
         form,
         'Email is already taken',

@@ -21,13 +21,14 @@ export async function load({ locals, params }) {
 
   if (emailParam && tokenParam) {
     try {
-      const getTokens = await db
-        .select({ userId: tokens.userId, expiresAt: tokens.expiresAt })
-        .from(tokens)
-        .where(eq(tokens.id, tokenParam));
+      const token = await db.query.tokens.findFirst({
+        where: eq(tokens.id, tokenParam),
+        columns: {
+          userId: true,
+          expiresAt: true
+        }
+      });
 
-      const token = getTokens[0];
-      console.log(token);
       if (!token) {
         error(400, 'Invalid Token');
       }
