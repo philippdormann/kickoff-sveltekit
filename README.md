@@ -40,5 +40,4 @@ this project makes use of some great tools and libraries, and could not have com
 - [Hunter Johnston (huntabyte)](https://github.com/huntabyte)
 - [Andreas Söderlund (ciscoheat)](https://github.com/ciscoheat)
 - [pilcrow](https://github.com/pilcrowOnPaper)
-- [Kabir Goel - kbrgl](https://github.com/kbrgl)
 - [Carsten Lebek - carstenlebek](https://github.com/carstenlebek)
