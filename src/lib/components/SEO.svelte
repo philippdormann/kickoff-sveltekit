@@ -3,7 +3,7 @@
   import { PUBLIC_BASE_URL } from '$env/static/public';
 
   // Assets
-  import metaImage from '$lib/assets/meta.png';
+  import metaImage from '$lib/assets/meta_image.png';
 
   export let title: string;
   export let description: string;
