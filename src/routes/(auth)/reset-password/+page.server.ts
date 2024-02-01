@@ -15,6 +15,7 @@ import { requestPasswordResetSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
 import { generateId } from 'lucia';
+import { Argon2id } from 'oslo/password';
 
 export async function load({ locals }) {
   // redirect user if already logged in
@@ -60,6 +61,7 @@ const requestPasswordReset: Action = async (event) => {
 
   try {
     const timestamp = new Date(Date.now() + 1000 * 60 * 10);
+
     const createOrUpdateTokens = await db
       .insert(tokens)
       .values({
@@ -69,15 +71,18 @@ const requestPasswordReset: Action = async (event) => {
       })
       .onConflictDoUpdate({
         target: tokens.userId,
-        set: { expiresAt: timestamp }
+        set: { id: generateId(12), expiresAt: timestamp }
       })
       .returning();
-
-    console.log(createOrUpdateTokens);
 
     const token = createOrUpdateTokens[0];
 
     await auth.invalidateUserSessions(user.id);
+    const tempPassword = new Argon2id().hash(`temp_${user.id}`);
+    await db
+      .update(users)
+      .set({ hashed_password: await tempPassword })
+      .where(eq(users.id, user.id));
 
     const url = new URL(
       `${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`
