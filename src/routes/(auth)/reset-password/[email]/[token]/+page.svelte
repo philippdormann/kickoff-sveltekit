@@ -42,22 +42,12 @@
       let:config
       let:delayed
     >
-      <Form.Field name="email" {config} let:value>
-        <Form.Input
-          type="hidden"
-          value={value ?? ''}
-          aria-hidden="true"
-          required
-        />
+      <Form.Field name="email" {config}>
+        <Form.Input type="hidden" aria-hidden="true" required />
       </Form.Field>
 
-      <Form.Field name="token" {config} let:value>
-        <Form.Input
-          type="hidden"
-          value={value ?? ''}
-          aria-hidden="true"
-          required
-        />
+      <Form.Field name="token" {config}>
+        <Form.Input type="hidden" aria-hidden="true" required />
       </Form.Field>
 
       <Form.Field name="password" {config} let:constraints>

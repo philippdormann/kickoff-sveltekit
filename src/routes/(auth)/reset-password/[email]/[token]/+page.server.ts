@@ -43,10 +43,11 @@ export async function load({ locals, params }) {
     throw redirect(302, '/reset-password');
   }
 
-  const form = await superValidate(resetPasswordSchema);
-
-  form.data.email = emailParam;
-  form.data.token = tokenParam;
+  const form = await superValidate(
+    { email: emailParam, token: tokenParam },
+    resetPasswordSchema,
+    { errors: false }
+  );
 
   return {
     metadata: {
