@@ -50,6 +50,6 @@ export const resetPasswordSchema = z.object({
     .min(1, { message: 'Password confirmation is required' })
 });
 
-export const editAccountSchema = z.object({
+export const editUserSchema = z.object({
   avatar: z.string({ required_error: 'Avatar is required' })
 });

@@ -2,20 +2,24 @@
 import type { Action, Actions } from './$types';
 
 // Utils
-import db from '$lib/server/database';
-import { Users } from '$models/user';
-import { eq } from 'drizzle-orm';
 import { auth } from '$lib/server/auth';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
-import { loginSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
+import { eq } from 'drizzle-orm';
 import { Argon2id } from 'oslo/password';
+
+// Schemas
+import { loginSchema } from '$lib/validations/auth';
+
+// Database
+import db from '$lib/server/database';
+import { Users } from '$models/user';
 
 export async function load({ locals }) {
   // redirect to `/` if logged in
-  if (locals.user) throw redirect(302, '/');
+  if (locals.user) redirect(302, '/');
 
   const form = await superValidate(zod(loginSchema));
 
@@ -87,7 +91,7 @@ const login: Action = async (event) => {
     }
   }
 
-  throw redirect(
+  redirect(
     '/',
     {
       type: 'success',

@@ -1,8 +1,11 @@
 // Env Variables
 import { PUBLIC_AWS_S3_BUCKET_NAME } from '$env/static/public';
 
+// Typs
+import { type RequestHandler } from '@sveltejs/kit';
+
 // Utils
-import { error, json, type RequestHandler } from '@sveltejs/kit';
+import { error, json } from '@sveltejs/kit';
 import { s3 } from '$lib/server/storage';
 import { PutObjectCommand } from '@aws-sdk/client-s3';
 import { getSignedUrl } from '@aws-sdk/s3-request-presigner';

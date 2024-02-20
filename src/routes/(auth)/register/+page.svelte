@@ -7,11 +7,11 @@
 
   // Components
   import * as Form from '$components/ui/form';
-  import * as Card from '$components/ui/card';
   import { Input } from '$components/ui/input';
   import { Button } from '$components/ui/button';
+  import * as Card from '$components/ui/card';
 
-  // Assets
+  // Icons
   import { Reload, GithubLogo, LinkedinLogo } from 'radix-icons-svelte';
 
   export let data;

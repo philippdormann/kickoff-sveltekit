@@ -1,4 +1,5 @@
 import { pgTable, text, timestamp } from 'drizzle-orm/pg-core';
+
 import { Users } from './user';
 
 export const Sessions = pgTable('Session', {

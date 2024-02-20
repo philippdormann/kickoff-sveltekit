@@ -1,14 +1,14 @@
-// Packages
+// Stores
+import { dev } from '$app/environment';
+
+// Utils
 import { Lucia, TimeSpan } from 'lucia';
 import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 
-// Utils
+// Database
 import db from '$lib/server/database';
 import { Users } from '$models/user';
 import { Sessions } from '$models/session';
-
-// Stores
-import { dev } from '$app/environment';
 
 const adapter = new DrizzlePostgreSQLAdapter(db, Sessions, Users);
 

@@ -1,12 +1,12 @@
 <script lang="ts">
+  // Stores
+  import { page } from '$app/stores';
+
   // Utils
   import type { SubmitFunction } from '@sveltejs/kit';
   import { enhance } from '$app/forms';
   import { themes } from '$lib/utils/themes';
   import { browser } from '$app/environment';
-
-  // Stores
-  import { page } from '$app/stores';
 
   // Components
   import { Button } from '$components/ui/button';

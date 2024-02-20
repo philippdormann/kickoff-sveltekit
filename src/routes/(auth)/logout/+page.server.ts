@@ -2,13 +2,13 @@ import { auth } from '$lib/server/auth';
 import { redirect } from 'sveltekit-flash-message/server';
 
 export const load = async () => {
-  throw redirect(302, '/');
+  redirect(302, '/');
 };
 
 export const actions = {
   default: async (event) => {
-    // redirect to `/` if logged in
-    if (!event.locals.session) throw redirect(302, '/');
+    // redirect to `/` if not logged in
+    if (!event.locals.session) redirect(302, '/');
 
     await auth.invalidateSession(event.locals.session.id);
     const sessionCookie = auth.createBlankSessionCookie();
@@ -17,7 +17,7 @@ export const actions = {
       ...sessionCookie.attributes
     });
 
-    throw redirect(
+    redirect(
       '/',
       {
         type: 'success',

@@ -2,17 +2,21 @@
 import type { Action } from './$types';
 
 // Utils
+import { redirect } from 'sveltekit-flash-message/server';
+import { error } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms/server';
+import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
+import { eq } from 'drizzle-orm';
+import { Argon2id } from 'oslo/password';
+
+// Scehmas
+import { resetPasswordSchema } from '$lib/validations/auth';
+
+// Database
 import db from '$lib/server/database';
 import { Users } from '$models/user';
 import { Tokens } from '$models/token';
-import { eq } from 'drizzle-orm';
-import { error } from '@sveltejs/kit';
-import { redirect } from 'sveltekit-flash-message/server';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { resetPasswordSchema } from '$lib/validations/auth';
-import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
-import { Argon2id } from 'oslo/password';
 
 export async function load({ locals, params, url }) {
   // redirect user if already logged in
@@ -110,7 +114,7 @@ const reset: Action = async (event) => {
     await db.delete(Tokens).where(eq(Tokens.key, token));
   }
 
-  throw redirect(
+  redirect(
     '/login',
     {
       type: 'success',

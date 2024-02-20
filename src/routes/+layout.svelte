@@ -1,12 +1,12 @@
 <script lang="ts">
-  // Utils
-  import { onNavigate, disableScrollHandling } from '$app/navigation';
-  import { getFlash } from 'sveltekit-flash-message/client';
-
   // Stores
   import { page } from '$app/stores';
   import { browser } from '$app/environment';
   import { jsStatus } from '$lib/stores/js_status';
+
+  // Utils
+  import { onNavigate, disableScrollHandling } from '$app/navigation';
+  import { getFlash } from 'sveltekit-flash-message/client';
 
   // Components
   import SEO from '$components/SEO.svelte';

@@ -7,10 +7,10 @@
 
   // Components
   import * as Form from '$components/ui/form';
-  import * as Card from '$components/ui/card';
   import { Input } from '$components/ui/input';
+  import * as Card from '$components/ui/card';
 
-  // Assets
+  // Icons
   import { Reload } from 'radix-icons-svelte';
 
   export let data;

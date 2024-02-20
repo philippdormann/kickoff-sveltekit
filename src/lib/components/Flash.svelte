@@ -1,6 +1,9 @@
 <script lang="ts">
-  import { CheckCircled, ExclamationTriangle, CrossCircled } from 'radix-icons-svelte';
+  // Utils
   import { fly } from 'svelte/transition';
+
+  // Icons
+  import { CheckCircled, ExclamationTriangle, CrossCircled } from 'radix-icons-svelte';
 
   export let type: 'success' | 'error' | 'warning';
   export let message: string;

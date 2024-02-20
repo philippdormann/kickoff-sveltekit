@@ -1,10 +1,12 @@
 <script lang="ts">
+  import { page } from '$app/stores';
   import { Toaster as Sonner, type ToasterProps as SonnerProps } from 'svelte-sonner';
 
   type $$Props = SonnerProps;
 </script>
 
 <Sonner
+  theme={$page.data.theme ?? 'system'}
   class="toaster group"
   toastOptions={{
     classes: {

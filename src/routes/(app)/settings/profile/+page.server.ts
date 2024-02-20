@@ -1,28 +1,42 @@
+// Types
+import { type Action } from '@sveltejs/kit';
+
 // Utils
-import { type Action, fail } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
+import { redirect } from 'sveltekit-flash-message/server';
+import { fail } from '@sveltejs/kit';
+import { zod } from 'sveltekit-superforms/adapters';
+import { superValidate } from 'sveltekit-superforms/server';
+import { setFormError } from '$lib/utils/helpers/forms';
+import { eq } from 'drizzle-orm';
+
+// Schemas
+import { editUserSchema } from '$lib/validations/auth';
+
+// Database
 import db from '$lib/server/database';
 import { Users } from '$models/user';
-import { eq } from 'drizzle-orm';
-import { superValidate } from 'sveltekit-superforms/server';
-import { zod } from 'sveltekit-superforms/adapters';
-import { editAccountSchema } from '$lib/validations/auth';
-import { setFormError } from '$lib/utils/helpers/forms';
-import { redirect } from 'sveltekit-flash-message/server';
+import { UsersAccounts, Accounts } from '$models/account';
 
-export async function load() {
-  const form = await superValidate(zod(editAccountSchema));
+export async function load(event) {
+  if (!event.locals.user) {
+    redirect('/login', { type: 'error', message: 'Please login to view this page' }, event);
+  }
+
+  const form = await superValidate(zod(editUserSchema), {
+    id: 'edit-user-form'
+  });
 
   return {
     metadata: {
-      title: 'Profile'
+      title: 'User Profile'
     },
     form
   };
 }
 
-const edit: Action = async (event) => {
-  const form = await superValidate(event.request, zod(editAccountSchema));
+const editUser: Action = async (event) => {
+  const form = await superValidate(event.request, zod(editUserSchema));
 
   if (!form.valid) {
     return fail(400, { form });
@@ -30,7 +44,7 @@ const edit: Action = async (event) => {
     const user = event.locals.user;
 
     if (!user) {
-      throw redirect(
+      redirect(
         {
           type: 'error',
           message: 'You are not logged in'
@@ -42,7 +56,7 @@ const edit: Action = async (event) => {
     const { avatar } = form.data;
 
     if (!avatar) {
-      throw redirect(
+      redirect(
         {
           type: 'warning',
           message: 'No changes were made. Nothing to update.'
@@ -65,14 +79,16 @@ const edit: Action = async (event) => {
       }
     }
 
-    throw redirect({ type: 'success', message: 'Account updated' }, event);
+    redirect({ type: 'success', message: 'Account updated' }, event);
   }
 };
 
-const cancel: Action = async (event) => {
+const deleteUser: Action = async (event) => {
   const user = event.locals.user;
 
-  if (user) {
+  if (!user) redirect('/', { type: 'error', message: 'You are not logged in' }, event);
+
+  try {
     try {
       await auth.invalidateUserSessions(user.id);
       const sessionCookie = auth.createBlankSessionCookie();
@@ -81,7 +97,7 @@ const cancel: Action = async (event) => {
         ...sessionCookie.attributes
       });
     } catch {
-      throw redirect(
+      redirect(
         {
           type: 'error',
           message: 'Something went wrong. Please try again later.'
@@ -90,20 +106,23 @@ const cancel: Action = async (event) => {
       );
     }
 
-    try {
-      await db.delete(Users).where(eq(Users.id, user.id));
-    } catch {
-      throw redirect(
-        {
-          type: 'error',
-          message: 'Something went wrong. Please try again later.'
-        },
-        event
-      );
-    }
+    await db.transaction(async (tx) => {
+      await tx.delete(UsersAccounts).where(eq(UsersAccounts.userId, user.id));
+      await tx.delete(Accounts).where(eq(Accounts.name, user.email.split('@')[0]));
+      await tx.delete(Users).where(eq(Users.id, user.id));
+    });
+  } catch (error) {
+    console.log(error);
+    redirect(
+      {
+        type: 'error',
+        message: 'Something went wrong. Please try again later.'
+      },
+      event
+    );
   }
 
-  throw redirect('/', { type: 'success', message: 'Account deleted.' }, event);
+  redirect('/', { type: 'success', message: 'Account deleted.' }, event);
 };
 
-export const actions = { edit, cancel };
+export const actions = { editUser, deleteUser };

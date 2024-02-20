@@ -5,23 +5,27 @@ import type { Action } from './$types';
 import { PUBLIC_BASE_URL } from '$env/static/public';
 
 // Utils
-import db from '$lib/server/database';
 import { auth } from '$lib/server/auth';
-import { Users } from '$models/user';
-import { Tokens } from '$models/token';
-import { eq } from 'drizzle-orm';
 import { redirect } from 'sveltekit-flash-message/server';
-import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
-import { requestPasswordResetSchema } from '$lib/validations/auth';
+import { superValidate } from 'sveltekit-superforms/server';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
+import { eq } from 'drizzle-orm';
 import { sendEmail } from '$lib/utils/mail/mailer';
 import { Argon2id } from 'oslo/password';
 import { generateNanoId } from '$lib/utils/helpers/nanoid';
 
+// Schemas
+import { requestPasswordResetSchema } from '$lib/validations/auth';
+
+// Database
+import db from '$lib/server/database';
+import { Users } from '$models/user';
+import { Tokens } from '$models/token';
+
 export async function load({ locals }) {
   // redirect user if already logged in
-  if (locals.user) throw redirect(302, '/');
+  if (locals.user) redirect(302, '/');
 
   const form = await superValidate(zod(requestPasswordResetSchema));
 
@@ -51,7 +55,7 @@ const requestPasswordReset: Action = async (event) => {
 
   if (!user) {
     // we send a success message even if the user doesn't exist to prevent email enumeration
-    throw redirect(
+    redirect(
       '/',
       {
         type: 'success',
@@ -95,7 +99,7 @@ const requestPasswordReset: Action = async (event) => {
     });
   }
 
-  throw redirect(
+  redirect(
     '/',
     {
       type: 'success',

@@ -4,11 +4,11 @@
   import { invalidateAll } from '$app/navigation';
   import { slide } from 'svelte/transition';
 
-  // Icons
-  import { HamburgerMenu, Exit, Cross1 } from 'radix-icons-svelte';
-
   // Components
   import { Button } from '$components/ui/button';
+
+  // Icons
+  import { HamburgerMenu, Exit, Cross1 } from 'radix-icons-svelte';
 
   export let user: object | null = null;
   let isMenuOpen = false;
@@ -27,11 +27,11 @@
 
     <div class="hidden gap-2 lg:inline-flex">
       {#if !user}
-        <Button href="/login" variant="outline">Login</Button>
-        <Button href="/register" variant="outline">Register</Button>
+        <Button href="/login" variant="outline" class="transition-none">Login</Button>
+        <Button href="/register" variant="outline" class="transition-none">Register</Button>
       {:else}
-        <Button href="/settings/profile" variant="outline">Settings</Button>
-        <Button form="logout" type="submit" variant="outline">
+        <Button href="/settings/profile" variant="outline" class="transition-none">Settings</Button>
+        <Button form="logout" type="submit" variant="outline" class="transition-none">
           <Exit class="mr-1 h-4 w-4" />
           Log out
         </Button>
@@ -52,7 +52,7 @@
 
   <!-- Mobile Dropdown Menu -->
   {#if isMenuOpen}
-    <div transition:slide class="mx-2 rounded-lg border-2 border-border">
+    <div transition:slide class="bg-muted fixed w-full rounded-lg lg:hidden">
       <div class="flex w-full flex-col gap-2 p-4">
         {#if !user}
           <Button href="/login" variant="link" on:click={toggleMenuState} class="text-accent-foreground">Login</Button>

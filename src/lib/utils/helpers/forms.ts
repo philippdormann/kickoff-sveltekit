@@ -1,5 +1,5 @@
-import type { NumericRange } from 'sveltekit-superforms/dist/utils';
-import { fail, type RequestEvent } from '@sveltejs/kit';
+import { type NumericRange, type RequestEvent } from '@sveltejs/kit';
+import { fail } from '@sveltejs/kit';
 import { setError } from 'sveltekit-superforms/server';
 import { setFlash } from 'sveltekit-flash-message/server';
 

@@ -1,7 +1,8 @@
 import { pgTable, text, serial, timestamp } from 'drizzle-orm/pg-core';
-import { Users } from './user';
 import { relations } from 'drizzle-orm';
 import { generateNanoId } from '../../utils/helpers/nanoid';
+
+import { Users } from './user';
 
 export const Tokens = pgTable('Token', {
   id: serial('id').primaryKey(),
