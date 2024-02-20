@@ -1,14 +1,14 @@
 // Utils
 import { type Action, fail } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
+import db from '$lib/server/database';
+import { users } from '$lib/db/models/auth';
+import { eq } from 'drizzle-orm';
 import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { editAccountSchema } from '$lib/validations/auth';
 import { setFormError } from '$lib/utils/helpers/forms';
 import { redirect } from 'sveltekit-flash-message/server';
-import db from '$lib/server/database';
-import { users } from '$lib/db/models/auth';
-import { eq } from 'drizzle-orm';
 
 export async function load({ locals }) {
   // redirect to `/` if logged in
