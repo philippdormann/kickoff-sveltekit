@@ -3,7 +3,8 @@
   import { PUBLIC_AWS_S3_BUCKET_URL } from '$env/static/public';
 
   // Utils
-  import type { FormOptions } from 'formsnap';
+  import { superForm } from 'sveltekit-superforms';
+  import { zodClient } from 'sveltekit-superforms/adapters';
   import { editAccountSchema } from '$lib/validations/auth';
   import * as flashModule from 'sveltekit-flash-message/client';
   import { error } from '@sveltejs/kit';
@@ -12,8 +13,8 @@
   import { toast } from 'svelte-sonner';
 
   // Components
-  import FormWrapper from '$components/FormWrapper.svelte';
   import * as Form from '$components/ui/form';
+  import { Input } from '$components/ui/input';
   import { Button } from '$components/ui/button';
   import * as AlertDialog from '$components/ui/alert-dialog';
   import * as Alert from '$components/ui/alert';
@@ -22,6 +23,7 @@
   // Assets
   import avatarPlaceholder from '$lib/assets/avatar.png';
   import { Reload, CrossCircled } from 'radix-icons-svelte';
+  import FormWrapper from '$components/FormWrapper.svelte';
 
   export let data;
 
@@ -31,8 +33,8 @@
   let avatarFileId: string | null = null;
   let avatarPreviewUrl: string | null = null;
 
-  const options: FormOptions<typeof editAccountSchema> = {
-    validators: editAccountSchema,
+  const form = superForm(data.form, {
+    validators: zodClient(editAccountSchema),
     invalidateAll: true,
     delayMs: 500,
     multipleSubmits: 'prevent',
@@ -40,7 +42,6 @@
     flashMessage: {
       module: flashModule
     },
-    resetForm: true,
     onSubmit: async ({ formData, cancel }) => {
       if (avatarFileId) {
         formData.set('avatar', avatarFileId as string);
@@ -54,7 +55,9 @@
         toast.error('No changes were made');
       }
     }
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
 
   const uploadAvatar = async (event: Event) => {
     fileUploadStatus = 'ready';
@@ -87,14 +90,6 @@
 
       const { fileName, presignedUrl } = await getPresignedUrl.json();
 
-      // const uploadToS3 = await fetch(presignedUrl, {
-      // 	method: 'PUT',
-      // 	headers: {
-      // 		'Content-type': avatarFile.type
-      // 	},
-      // 	body: avatarFile
-      // });
-
       const xhr = new XMLHttpRequest();
 
       xhr.upload.onloadstart = () => {
@@ -118,6 +113,10 @@
             avatarPreviewUrl = `${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${fileName}`;
             fileUploadStatus = 'uploaded';
             fileUploadProgress = 0;
+
+            document
+              .getElementById('edit-account-form')
+              ?.dispatchEvent(new Event('submit'));
           } else {
             console.log('failure');
             fileUploadStatus = 'failed';
@@ -146,7 +145,7 @@
 
 <div class="grid flex-1 content-center">
   <FormWrapper>
-    <h3 class="self-start text-lg font-semibold uppercase">User Settings</h3>
+    <h3 class="self-start text-lg font-semibold uppercase">User Profile</h3>
     <div
       id="avatar-preview"
       class="flex shrink-0 items-center justify-center p-2 {fileUploadStatus ===
@@ -157,29 +156,29 @@
       <img
         src={avatarPreviewUrl ?? userAvatar}
         alt="avatar preview"
-        class="h-32 w-32 rounded-full object-cover"
+        class="h-32 w-32 rounded-full border-4 border-border object-cover ring-4 ring-accent drop-shadow-sm transition-all duration-300 ease-in-out hover:border-primary/30"
       />
     </div>
 
-    <Form.Root
+    <form
+      id="edit-account-form"
       method="POST"
       action="?/edit"
-      form={data.form}
-      schema={editAccountSchema}
       enctype="multipart/form-data"
-      {options}
-      let:config
-      let:delayed
+      use:enhance
     >
-      <Form.Field name="avatar" {config} let:constraints>
-        <Form.Label>Avatar</Form.Label>
-        <Form.Input
-          type="file"
-          on:change={uploadAvatar}
-          disabled={fileUploadStatus === 'uploading'}
-          {...constraints}
-        />
-        <Form.Validation />
+      <Form.Field name="avatar" {form} let:constraints>
+        <Form.Control let:attrs>
+          <Form.Label>Avatar</Form.Label>
+          <Input
+            type="file"
+            on:change={uploadAvatar}
+            disabled={fileUploadStatus === 'uploading'}
+            {...attrs}
+            {...constraints}
+          />
+          <Form.FieldErrors />
+        </Form.Control>
       </Form.Field>
 
       {#if fileUploadStatus === 'uploading'}
@@ -194,19 +193,23 @@
         </div>
       {/if}
 
-      <Form.Button disabled={delayed} variant="secondary" class="my-2 w-full">
-        {#if delayed}
+      <Form.Button
+        disabled={$delayed}
+        variant="secondary"
+        class="my-2 hidden w-full"
+      >
+        {#if $delayed}
           <Reload class="mr-2 h-4 w-4 animate-spin" />
         {/if}
         Update
       </Form.Button>
-    </Form.Root>
+    </form>
 
     {#if fileUploadStatus === 'failed'}
       {#each fileUploadErrors as error}
         <Alert.Root
           variant="destructive"
-          class="inline-flex items-center gap-2"
+          class="inline-flex items-center gap-2 py-2"
         >
           <div>
             <CrossCircled class="h-6 w-6" />

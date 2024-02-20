@@ -1,7 +1,8 @@
 // Utils
 import { type Action, fail } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
-import { superValidate, superValidateSync } from 'sveltekit-superforms/server';
+import { superValidate } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import { editAccountSchema } from '$lib/validations/auth';
 import { setFormError } from '$lib/utils/helpers/forms';
 import { redirect } from 'sveltekit-flash-message/server';
@@ -13,7 +14,7 @@ export async function load({ locals }) {
   // redirect to `/` if logged in
   if (!locals.user) throw redirect(302, '/');
 
-  const form = superValidateSync(editAccountSchema);
+  const form = await superValidate(zod(editAccountSchema));
 
   return {
     metadata: {
@@ -24,7 +25,7 @@ export async function load({ locals }) {
 }
 
 const edit: Action = async (event) => {
-  const form = await superValidate(event.request, editAccountSchema);
+  const form = await superValidate(event.request, zod(editAccountSchema));
 
   if (!form.valid) {
     return fail(400, { form });

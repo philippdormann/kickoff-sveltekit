@@ -11,6 +11,7 @@ import { users, tokens } from '$lib/db/models/auth';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import { requestPasswordResetSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
@@ -21,7 +22,7 @@ export async function load({ locals }) {
   // redirect user if already logged in
   if (locals.user) throw redirect(302, '/');
 
-  const form = await superValidate(requestPasswordResetSchema);
+  const form = await superValidate(zod(requestPasswordResetSchema));
 
   return {
     metadata: {
@@ -32,7 +33,10 @@ export async function load({ locals }) {
 }
 
 const requestPasswordReset: Action = async (event) => {
-  const form = await superValidate(event.request, requestPasswordResetSchema);
+  const form = await superValidate(
+    event.request,
+    zod(requestPasswordResetSchema)
+  );
 
   if (!form.valid) {
     return setFormFail(form);

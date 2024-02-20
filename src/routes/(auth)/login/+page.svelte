@@ -1,12 +1,14 @@
 <script lang="ts">
   // Utils
-  import type { FormOptions } from 'formsnap';
+  import { superForm } from 'sveltekit-superforms';
+  import { zodClient } from 'sveltekit-superforms/adapters';
   import { loginSchema } from '$lib/validations/auth';
   import * as flashModule from 'sveltekit-flash-message/client';
 
   // Components
   import * as Form from '$components/ui/form';
   import * as Card from '$components/ui/card';
+  import { Input } from '$components/ui/input';
   import { Button } from '$components/ui/button';
 
   // Assets
@@ -14,8 +16,8 @@
 
   export let data;
 
-  const options: FormOptions<typeof loginSchema> = {
-    validators: loginSchema,
+  const form = superForm(data.form, {
+    validators: zodClient(loginSchema),
     invalidateAll: true,
     delayMs: 500,
     multipleSubmits: 'prevent',
@@ -23,7 +25,9 @@
     flashMessage: {
       module: flashModule
     }
-  };
+  });
+
+  const { form: formData, enhance, delayed } = form;
 </script>
 
 <Card.Root>
@@ -34,44 +38,44 @@
     >
   </Card.Header>
   <Card.Content class="grid gap-4">
-    <Form.Root
-      method="POST"
-      action="?/login"
-      form={data.form}
-      schema={loginSchema}
-      {options}
-      let:config
-      let:delayed
-    >
-      <Form.Field name="email" {config} let:constraints>
-        <Form.Label>Email</Form.Label>
-        <Form.Input
-          type="email"
-          autocapitalize="none"
-          autocorrect="off"
-          autocomplete="username"
-          {...constraints}
-        />
-        <Form.Validation />
+    <form method="POST" action="?/login" use:enhance>
+      <Form.Field {form} name="email" let:constraints>
+        <Form.Control let:attrs>
+          <Form.Label>Email</Form.Label>
+          <Input
+            type="email"
+            autocapitalize="none"
+            autocorrect="off"
+            autocomplete="username"
+            bind:value={$formData.email}
+            {...attrs}
+            {...constraints}
+          />
+          <Form.FieldErrors />
+        </Form.Control>
       </Form.Field>
 
-      <Form.Field name="password" {config} let:constraints>
-        <Form.Label>Password</Form.Label>
-        <Form.Input
-          type="password"
-          autocomplete="current-password"
-          {...constraints}
-        />
-        <Form.Validation />
+      <Form.Field {form} name="password" let:constraints>
+        <Form.Control let:attrs>
+          <Form.Label>Password</Form.Label>
+          <Input
+            type="password"
+            autocomplete="current-password"
+            bind:value={$formData.password}
+            {...attrs}
+            {...constraints}
+          />
+          <Form.FieldErrors />
+        </Form.Control>
       </Form.Field>
 
-      <Form.Button disabled={delayed} class="my-2 w-full">
-        {#if delayed}
+      <Form.Button disabled={$delayed} class="my-2 w-full">
+        {#if $delayed}
           <Reload class="mr-2 h-4 w-4 animate-spin" />
         {/if}
         Sign In
       </Form.Button>
-    </Form.Root>
+    </form>
 
     <div class="relative">
       <div class="absolute inset-0 flex items-center">

@@ -63,5 +63,5 @@ export const resetPasswordSchema = z.object({
 });
 
 export const editAccountSchema = z.object({
-  avatar: z.string().optional()
+  avatar: z.string({ required_error: 'Avatar is required' })
 });

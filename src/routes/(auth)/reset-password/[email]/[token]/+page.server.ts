@@ -9,6 +9,7 @@ import { eq } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import { resetPasswordSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 
@@ -45,7 +46,7 @@ export async function load({ locals, params }) {
 
   const form = await superValidate(
     { email: emailParam, token: tokenParam },
-    resetPasswordSchema,
+    zod(resetPasswordSchema),
     { errors: false }
   );
 
@@ -58,7 +59,7 @@ export async function load({ locals, params }) {
 }
 
 const reset: Action = async (event) => {
-  const form = await superValidate(event.request, resetPasswordSchema);
+  const form = await superValidate(event.request, zod(resetPasswordSchema));
 
   if (!form.valid) {
     return setFormFail(form, {

@@ -8,6 +8,7 @@ import { users } from '$lib/db/models/auth';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import { registrationSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
@@ -18,7 +19,7 @@ export async function load({ locals }) {
   // redirect to `/` if logged in
   if (locals.user) throw redirect(302, '/');
 
-  const form = await superValidate(registrationSchema);
+  const form = await superValidate(zod(registrationSchema));
 
   return {
     metadata: {
@@ -29,7 +30,7 @@ export async function load({ locals }) {
 }
 
 const register: Action = async (event) => {
-  const form = await superValidate(event.request, registrationSchema);
+  const form = await superValidate(event.request, zod(registrationSchema));
 
   if (!form.valid) {
     return setFormFail(form, {

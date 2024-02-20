@@ -8,6 +8,7 @@ import { eq } from 'drizzle-orm';
 import { auth } from '$lib/server/auth';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
+import { zod } from 'sveltekit-superforms/adapters';
 import { loginSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { Argon2id } from 'oslo/password';
@@ -16,7 +17,7 @@ export async function load({ locals }) {
   // redirect to `/` if logged in
   if (locals.user) throw redirect(302, '/');
 
-  const form = await superValidate(loginSchema);
+  const form = await superValidate(zod(loginSchema));
 
   return {
     metadata: {
@@ -27,7 +28,7 @@ export async function load({ locals }) {
 }
 
 const login: Action = async (event) => {
-  const form = await superValidate(event.request, loginSchema);
+  const form = await superValidate(event.request, zod(loginSchema));
 
   if (!form.valid) {
     return setFormFail(form, { removeSensitiveData: ['password'] });
