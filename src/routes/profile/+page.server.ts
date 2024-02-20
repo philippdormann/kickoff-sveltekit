@@ -61,14 +61,10 @@ const edit: Action = async (event) => {
         await db.update(users).set({ avatar }).where(eq(users.id, user.id));
       } catch (error) {
         console.log(error);
-        return setFormError(
-          form,
-          'Something went wrong. Please try again later.',
-          {
-            status: 500,
-            field: 'avatar'
-          }
-        );
+        return setFormError(form, 'Something went wrong. Please try again later.', {
+          status: 500,
+          field: 'avatar'
+        });
       }
     }
 

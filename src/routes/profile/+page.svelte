@@ -57,14 +57,13 @@
     }
   });
 
-  const { form: formData, enhance, delayed } = form;
+  const { enhance, delayed } = form;
 
   const uploadAvatar = async (event: Event) => {
     fileUploadStatus = 'ready';
 
     try {
-      const avatarInputField: HTMLInputElement =
-        event.target as HTMLInputElement;
+      const avatarInputField: HTMLInputElement = event.target as HTMLInputElement;
       if (!avatarInputField.files) return;
       const avatarFile = avatarInputField.files[0];
 
@@ -114,9 +113,7 @@
             fileUploadStatus = 'uploaded';
             fileUploadProgress = 0;
 
-            document
-              .getElementById('edit-account-form')
-              ?.dispatchEvent(new Event('submit'));
+            document.getElementById('edit-account-form')?.dispatchEvent(new Event('submit'));
           } else {
             console.log('failure');
             fileUploadStatus = 'failed';
@@ -138,9 +135,7 @@
     }
   };
 
-  $: userAvatar = data.user?.avatar
-    ? `${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${data.user.avatar}`
-    : avatarPlaceholder;
+  $: userAvatar = data.user?.avatar ? `${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${data.user.avatar}` : avatarPlaceholder;
 </script>
 
 <div class="grid flex-1 content-center">
@@ -148,8 +143,7 @@
     <h3 class="self-start text-lg font-semibold uppercase">User Profile</h3>
     <div
       id="avatar-preview"
-      class="flex shrink-0 items-center justify-center p-2 {fileUploadStatus ===
-      'uploading'
+      class="flex shrink-0 items-center justify-center p-2 {fileUploadStatus === 'uploading'
         ? 'loading loading-infinity loading-lg text-primary'
         : ''}}"
     >
@@ -160,13 +154,7 @@
       />
     </div>
 
-    <form
-      id="edit-account-form"
-      method="POST"
-      action="?/edit"
-      enctype="multipart/form-data"
-      use:enhance
-    >
+    <form id="edit-account-form" method="POST" action="?/edit" enctype="multipart/form-data" use:enhance>
       <Form.Field name="avatar" {form} let:constraints>
         <Form.Control let:attrs>
           <Form.Label>Avatar</Form.Label>
@@ -193,11 +181,7 @@
         </div>
       {/if}
 
-      <Form.Button
-        disabled={$delayed}
-        variant="secondary"
-        class="my-2 hidden w-full"
-      >
+      <Form.Button disabled={$delayed} variant="secondary" class="my-2 hidden w-full">
         {#if $delayed}
           <Reload class="mr-2 h-4 w-4 animate-spin" />
         {/if}
@@ -207,10 +191,7 @@
 
     {#if fileUploadStatus === 'failed'}
       {#each fileUploadErrors as error}
-        <Alert.Root
-          variant="destructive"
-          class="inline-flex items-center gap-2 py-2"
-        >
+        <Alert.Root variant="destructive" class="inline-flex items-center gap-2 py-2">
           <div>
             <CrossCircled class="h-6 w-6" />
           </div>
@@ -225,22 +206,19 @@
 
     <AlertDialog.Root>
       <AlertDialog.Trigger class="w-full">
-        <Button variant="destructive" class="my-2 w-full">Delete Account</Button
-        >
+        <Button variant="destructive" class="my-2 w-full">Delete Account</Button>
       </AlertDialog.Trigger>
       <AlertDialog.Content>
         <AlertDialog.Header>
           <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
           <AlertDialog.Description>
-            This action cannot be undone. This will permanently delete your
-            account and remove your data from our servers.
+            This action cannot be undone. This will permanently delete your account and remove your data from our
+            servers.
           </AlertDialog.Description>
         </AlertDialog.Header>
         <AlertDialog.Footer>
           <AlertDialog.Cancel>Back to safety</AlertDialog.Cancel>
-          <AlertDialog.Action
-            class="bg-destructive/90 text-destructive-foreground hover:bg-destructive"
-          >
+          <AlertDialog.Action class="bg-destructive/90 text-destructive-foreground hover:bg-destructive">
             <form
               id="delete_account"
               action="?/cancel"

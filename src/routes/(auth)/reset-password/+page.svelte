@@ -48,9 +48,7 @@
           />
           <Form.FieldErrors />
         </Form.Control>
-        <Form.Description class="mt-1.5"
-          >We will send you a password reset link</Form.Description
-        >
+        <Form.Description class="mt-1.5">We will send you a password reset link</Form.Description>
       </Form.Field>
 
       <Form.Button disabled={$delayed} class="my-2 w-full">

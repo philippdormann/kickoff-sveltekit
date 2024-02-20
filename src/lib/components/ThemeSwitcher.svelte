@@ -41,8 +41,7 @@
       id="light-theme-switcher"
       type="submit"
       aria-label="Switch to light theme"
-      formaction="/theme?/set&theme={themes.light}&redirect={$page.url
-        .pathname}"
+      formaction="/theme?/set&theme={themes.light}&redirect={$page.url.pathname}"
       variant="outline"
       size="icon"
       class="rounded-r-none border-r-0"

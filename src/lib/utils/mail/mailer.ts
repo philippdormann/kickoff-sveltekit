@@ -12,12 +12,7 @@ import sendgrid from '@sendgrid/mail';
 import WelcomeTemplate from '$lib/utils/mail/templates/Welcome.svelte';
 import ResetPasswordTemplate from '$lib/utils/mail/templates/ResetPassword.svelte';
 
-export const sendEmail = async (
-  to: string,
-  subject: string,
-  templateName: string,
-  templateData?: any
-) => {
+export const sendEmail = async (to: string, subject: string, templateName: string, templateData?: any) => {
   if (to && subject && templateName) {
     sendgrid.setApiKey(SENDGRID_API_KEY);
 

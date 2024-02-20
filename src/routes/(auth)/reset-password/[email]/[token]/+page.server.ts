@@ -44,11 +44,9 @@ export async function load({ locals, params }) {
     throw redirect(302, '/reset-password');
   }
 
-  const form = await superValidate(
-    { email: emailParam, token: tokenParam },
-    zod(resetPasswordSchema),
-    { errors: false }
-  );
+  const form = await superValidate({ email: emailParam, token: tokenParam }, zod(resetPasswordSchema), {
+    errors: false
+  });
 
   return {
     metadata: {

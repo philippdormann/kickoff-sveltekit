@@ -26,30 +26,18 @@ export const loginSchema = z.object({
     .trim()
     .max(64, { message: 'Email must be less than 64 characters' })
     .email({ message: 'Email is invalid' }),
-  password: z
-    .string({ required_error: 'Password is required' })
-    .trim()
-    .min(1, { message: 'Password is required' })
+  password: z.string({ required_error: 'Password is required' }).trim().min(1, { message: 'Password is required' })
 });
 
 // Request Password Reset Form Validation
 export const requestPasswordResetSchema = z.object({
-  email: z
-    .string({ required_error: 'Email is required' })
-    .trim()
-    .min(1, { message: 'Email is required' })
+  email: z.string({ required_error: 'Email is required' }).trim().min(1, { message: 'Email is required' })
 });
 
 // Reset Password Form Validation
 export const resetPasswordSchema = z.object({
-  email: z
-    .string({ required_error: 'Email is required' })
-    .trim()
-    .email({ message: 'Email is invalid' }),
-  token: z
-    .string({ required_error: 'Token is required' })
-    .trim()
-    .min(1, { message: 'Token is required' }),
+  email: z.string({ required_error: 'Email is required' }).trim().email({ message: 'Email is invalid' }),
+  token: z.string({ required_error: 'Token is required' }).trim().min(1, { message: 'Token is required' }),
   password: z
     .string({ required_error: 'Password is required' })
     .trim()

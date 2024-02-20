@@ -53,6 +53,5 @@ export const setFormError = (
   }
 
   if (event) setFlash({ type: 'error', message: text }, event);
-  if (opts?.field)
-    return setError(form, opts?.field, text, { status: opts?.status ?? 400 });
+  if (opts?.field) return setError(form, opts?.field, text, { status: opts?.status ?? 400 });
 };

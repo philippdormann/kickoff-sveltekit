@@ -5,10 +5,7 @@
   type U = unknown;
 </script>
 
-<script
-  lang="ts"
-  generics="T extends Record<string, unknown>, U extends FormPath<T>"
->
+<script lang="ts" generics="T extends Record<string, unknown>, U extends FormPath<T>">
   import * as FormPrimitive from 'formsnap';
   import { cn } from '$lib/utils/utils';
 

@@ -32,9 +32,7 @@
 <Card.Root>
   <Card.Header class="space-y-1">
     <Card.Title class="text-2xl">Create an account</Card.Title>
-    <Card.Description
-      >Enter your email below to create your account</Card.Description
-    >
+    <Card.Description>Enter your email below to create your account</Card.Description>
   </Card.Header>
   <Card.Content class="grid gap-4">
     <div class="grid grid-cols-2 gap-6">
@@ -52,9 +50,7 @@
         <span class="w-full border-t" />
       </div>
       <div class="relative flex justify-center text-xs uppercase">
-        <span class="bg-card px-2 text-muted-foreground">
-          Or continue with
-        </span>
+        <span class="bg-card px-2 text-muted-foreground"> Or continue with </span>
       </div>
     </div>
     <form method="POST" action="?/register" use:enhance>

@@ -1,24 +1,14 @@
 <script lang="ts">
-  import {
-    CheckCircled,
-    ExclamationTriangle,
-    CrossCircled
-  } from 'radix-icons-svelte';
+  import { CheckCircled, ExclamationTriangle, CrossCircled } from 'radix-icons-svelte';
   import { fly } from 'svelte/transition';
 
   export let type: 'success' | 'error' | 'warning';
   export let message: string;
 
-  const title: string =
-    type === 'success'
-      ? 'Success!'
-      : type === 'error'
-        ? 'Whoops...'
-        : 'Warning!';
+  const title: string = type === 'success' ? 'Success!' : type === 'error' ? 'Whoops...' : 'Warning!';
 
   const bgColor = type === 'error' ? 'destructive' : 'primary';
-  const textColor =
-    type === 'error' ? 'destructive-foreground' : 'primary-foreground';
+  const textColor = type === 'error' ? 'destructive-foreground' : 'primary-foreground';
 </script>
 
 <div

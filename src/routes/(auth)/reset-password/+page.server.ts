@@ -33,10 +33,7 @@ export async function load({ locals }) {
 }
 
 const requestPasswordReset: Action = async (event) => {
-  const form = await superValidate(
-    event.request,
-    zod(requestPasswordResetSchema)
-  );
+  const form = await superValidate(event.request, zod(requestPasswordResetSchema));
 
   if (!form.valid) {
     return setFormFail(form);
@@ -88,9 +85,7 @@ const requestPasswordReset: Action = async (event) => {
       .set({ hashed_password: await tempPassword })
       .where(eq(users.id, user.id));
 
-    const url = new URL(
-      `${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`
-    );
+    const url = new URL(`${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`);
 
     await sendEmail(email, 'Reset Password', 'ResetPassword', { url: url });
   } catch (error) {

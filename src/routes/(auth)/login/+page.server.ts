@@ -53,10 +53,7 @@ const login: Action = async (event) => {
         );
       }
 
-      const validPassword = await new Argon2id().verify(
-        user.hashed_password!,
-        password
-      );
+      const validPassword = await new Argon2id().verify(user.hashed_password!, password);
 
       if (!validPassword) {
         return setFormError(

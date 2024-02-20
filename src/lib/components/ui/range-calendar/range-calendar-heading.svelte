@@ -8,11 +8,7 @@
   export { className as class };
 </script>
 
-<RangeCalendarPrimitive.Heading
-  let:headingValue
-  class={cn('text-sm font-medium', className)}
-  {...$$restProps}
->
+<RangeCalendarPrimitive.Heading let:headingValue class={cn('text-sm font-medium', className)} {...$$restProps}>
   <slot {headingValue}>
     {headingValue}
   </slot>
