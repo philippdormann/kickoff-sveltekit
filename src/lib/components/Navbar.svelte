@@ -30,7 +30,7 @@
         <Button href="/login" variant="outline">Login</Button>
         <Button href="/register" variant="outline">Register</Button>
       {:else}
-        <Button href="/profile" variant="outline">Profile</Button>
+        <Button href="/settings/profile" variant="outline">Settings</Button>
         <Button form="logout" type="submit" variant="outline">
           <Exit class="mr-1 h-4 w-4" />
           Log out
@@ -60,8 +60,8 @@
             >Register</Button
           >
         {:else}
-          <Button href="/profile" variant="link" on:click={toggleMenuState} class="text-accent-foreground"
-            >Profile</Button
+          <Button href="settings/profile" variant="link" on:click={toggleMenuState} class="text-accent-foreground"
+            >Settings</Button
           >
           <Button form="logout" type="submit" variant="link" on:click={toggleMenuState} class="text-accent-foreground">
             <Exit class="mr-1 h-4 w-4" />

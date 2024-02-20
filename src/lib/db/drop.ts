@@ -1,19 +1,19 @@
 import db from '$lib/server/database';
 import { sql } from 'drizzle-orm';
 
-async function reset() {
+async function drop() {
   const tableSchema = db._.schema;
   if (!tableSchema) {
     throw new Error('No table schema found');
   }
 
-  console.log('🗑️  Emptying the entire database');
+  console.log('🗑️  Deleting all database tables');
   const queries = Object.values(tableSchema).map((table) => {
-    console.log(`🧨 Preparing delete query for table: ${table.dbName}`);
-    return sql.raw(`TRUNCATE TABLE "${table.dbName}" CASCADE;`);
+    console.log(`🧨 Preparing drop query for table: ${table.dbName}`);
+    return sql.raw(`DROP TABLE "${table.dbName}" CASCADE;`);
   });
 
-  console.log('📨 Sending delete queries...');
+  console.log('📨 Sending drop queries...');
 
   await db.transaction(async (tx) => {
     await Promise.all(
@@ -26,6 +26,6 @@ async function reset() {
   console.log('✅ Database emptied');
 }
 
-reset().catch((e) => {
+drop().catch((e) => {
   console.error(e);
 });

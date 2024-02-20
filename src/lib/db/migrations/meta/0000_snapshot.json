@@ -1,11 +1,11 @@
 {
-  "id": "cf4c7c22-0c71-4d86-a042-3f2ab957d91d",
+  "id": "4499c9ed-617d-4863-bfa0-48de0f1d393c",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "5",
   "dialect": "pg",
   "tables": {
-    "session": {
-      "name": "session",
+    "Session": {
+      "name": "Session",
       "schema": "",
       "columns": {
         "id": {
@@ -29,12 +29,16 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "session_user_id_user_id_fk": {
-          "name": "session_user_id_user_id_fk",
-          "tableFrom": "session",
-          "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+        "Session_user_id_User_id_fk": {
+          "name": "Session_user_id_User_id_fk",
+          "tableFrom": "Session",
+          "tableTo": "User",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "no action",
           "onUpdate": "no action"
         }
@@ -42,21 +46,27 @@
       "compositePrimaryKeys": {},
       "uniqueConstraints": {}
     },
-    "token": {
-      "name": "token",
+    "Token": {
+      "name": "Token",
       "schema": "",
       "columns": {
         "id": {
           "name": "id",
-          "type": "text",
+          "type": "serial",
           "primaryKey": true,
+          "notNull": true
+        },
+        "key": {
+          "name": "key",
+          "type": "text",
+          "primaryKey": false,
           "notNull": true
         },
         "user_id": {
           "name": "user_id",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
         "expires_at": {
           "name": "expires_at",
@@ -65,35 +75,42 @@
           "notNull": true
         }
       },
-      "indexes": {
-        "user_id_idx": {
-          "name": "user_id_idx",
-          "columns": ["user_id"],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
-        "token_user_id_user_id_fk": {
-          "name": "token_user_id_user_id_fk",
-          "tableFrom": "token",
-          "tableTo": "user",
-          "columnsFrom": ["user_id"],
-          "columnsTo": ["id"],
+        "Token_user_id_User_id_fk": {
+          "name": "Token_user_id_User_id_fk",
+          "tableFrom": "Token",
+          "tableTo": "User",
+          "columnsFrom": [
+            "user_id"
+          ],
+          "columnsTo": [
+            "id"
+          ],
           "onDelete": "cascade",
           "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "token_user_id_unique": {
-          "name": "token_user_id_unique",
+        "Token_key_unique": {
+          "name": "Token_key_unique",
           "nullsNotDistinct": false,
-          "columns": ["user_id"]
+          "columns": [
+            "key"
+          ]
+        },
+        "Token_user_id_unique": {
+          "name": "Token_user_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "user_id"
+          ]
         }
       }
     },
-    "user": {
-      "name": "user",
+    "User": {
+      "name": "User",
       "schema": "",
       "columns": {
         "id": {
@@ -114,18 +131,18 @@
           "primaryKey": false,
           "notNull": false
         },
-        "role": {
-          "name": "role",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "'MEMBER'"
-        },
         "avatar": {
           "name": "avatar",
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "admin": {
+          "name": "admin",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
@@ -141,33 +158,21 @@
           "notNull": false
         }
       },
-      "indexes": {
-        "email_idx": {
-          "name": "email_idx",
-          "columns": ["email"],
-          "isUnique": true
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "user_email_unique": {
-          "name": "user_email_unique",
+        "User_email_unique": {
+          "name": "User_email_unique",
           "nullsNotDistinct": false,
-          "columns": ["email"]
+          "columns": [
+            "email"
+          ]
         }
       }
     }
   },
-  "enums": {
-    "role": {
-      "name": "role",
-      "values": {
-        "ADMIN": "ADMIN",
-        "MEMBER": "MEMBER"
-      }
-    }
-  },
+  "enums": {},
   "schemas": {},
   "_meta": {
     "columns": {},

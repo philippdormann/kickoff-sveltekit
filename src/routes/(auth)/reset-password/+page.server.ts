@@ -7,7 +7,8 @@ import { PUBLIC_BASE_URL } from '$env/static/public';
 // Utils
 import db from '$lib/server/database';
 import { auth } from '$lib/server/auth';
-import { users, tokens } from '$lib/db/models/auth';
+import { Users } from '$models/user';
+import { Tokens } from '$models/token';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -15,8 +16,8 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { requestPasswordResetSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
-import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
+import { generateNanoId } from '$lib/utils/helpers/nanoid';
 
 export async function load({ locals }) {
   // redirect user if already logged in
@@ -41,8 +42,8 @@ const requestPasswordReset: Action = async (event) => {
 
   const { email } = form.data;
 
-  const user = await db.query.users.findFirst({
-    where: eq(users.email, email),
+  const user = await db.query.Users.findFirst({
+    where: eq(Users.email, email),
     columns: {
       id: true
     }
@@ -64,15 +65,14 @@ const requestPasswordReset: Action = async (event) => {
     const timestamp = new Date(Date.now() + 1000 * 60 * 10);
 
     const createOrUpdateTokens = await db
-      .insert(tokens)
+      .insert(Tokens)
       .values({
-        id: generateId(12),
         userId: user.id,
         expiresAt: timestamp
       })
       .onConflictDoUpdate({
-        target: tokens.userId,
-        set: { id: generateId(12), expiresAt: timestamp }
+        target: Tokens.userId,
+        set: { key: generateNanoId({ token: true }), expiresAt: timestamp }
       })
       .returning();
 
@@ -81,11 +81,11 @@ const requestPasswordReset: Action = async (event) => {
     await auth.invalidateUserSessions(user.id);
     const tempPassword = new Argon2id().hash(`temp_${user.id}`);
     await db
-      .update(users)
-      .set({ hashed_password: await tempPassword })
-      .where(eq(users.id, user.id));
+      .update(Users)
+      .set({ hashedPassword: await tempPassword })
+      .where(eq(Users.id, user.id));
 
-    const url = new URL(`${PUBLIC_BASE_URL}/reset-password/${email}/${token?.id}`);
+    const url = new URL(`${PUBLIC_BASE_URL}/reset-password/${user.id}?token=${token?.key}`);
 
     await sendEmail(email, 'Reset Password', 'ResetPassword', { url: url });
   } catch (error) {

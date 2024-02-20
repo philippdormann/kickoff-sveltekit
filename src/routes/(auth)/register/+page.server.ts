@@ -4,7 +4,7 @@ import type { Action } from './$types';
 // Utils
 import db from '$lib/server/database';
 import { auth } from '$lib/server/auth';
-import { users } from '$lib/db/models/auth';
+import { Users } from '$models/user';
 import { eq } from 'drizzle-orm';
 import { redirect } from 'sveltekit-flash-message/server';
 import { superValidate } from 'sveltekit-superforms/server';
@@ -12,8 +12,8 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { registrationSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { sendEmail } from '$lib/utils/mail/mailer';
-import { generateId } from 'lucia';
 import { Argon2id } from 'oslo/password';
+import { generateNanoId } from '$lib/utils/helpers/nanoid';
 
 export async function load({ locals }) {
   // redirect to `/` if logged in
@@ -51,8 +51,8 @@ const register: Action = async (event) => {
       );
     }
 
-    const existingUser = await db.query.users.findFirst({
-      where: eq(users.email, email),
+    const existingUser = await db.query.Users.findFirst({
+      where: eq(Users.email, email),
       columns: {
         id: true
       }
@@ -70,14 +70,14 @@ const register: Action = async (event) => {
       );
     }
 
-    const userId = generateId(12);
-    const hashedPassword = await new Argon2id().hash(password);
+    const userId = generateNanoId();
+    const userHashedPassword = await new Argon2id().hash(password);
 
     try {
-      await db.insert(users).values({
+      await db.insert(Users).values({
         id: userId,
         email,
-        hashed_password: hashedPassword
+        hashedPassword: userHashedPassword
       });
 
       // Automatically log in the user

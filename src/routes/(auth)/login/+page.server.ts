@@ -3,7 +3,7 @@ import type { Action, Actions } from './$types';
 
 // Utils
 import db from '$lib/server/database';
-import { users } from '$lib/db/models/auth';
+import { Users } from '$models/user';
 import { eq } from 'drizzle-orm';
 import { auth } from '$lib/server/auth';
 import { redirect } from 'sveltekit-flash-message/server';
@@ -36,8 +36,8 @@ const login: Action = async (event) => {
     const { password, email } = form.data;
 
     try {
-      const user = await db.query.users.findFirst({
-        where: eq(users.email, email)
+      const user = await db.query.Users.findFirst({
+        where: eq(Users.email, email)
       });
 
       if (!user) {
@@ -53,7 +53,7 @@ const login: Action = async (event) => {
         );
       }
 
-      const validPassword = await new Argon2id().verify(user.hashed_password!, password);
+      const validPassword = await new Argon2id().verify(user.hashedPassword!, password);
 
       if (!validPassword) {
         return setFormError(

@@ -1,10 +1,10 @@
-import { Argon2id } from 'oslo/password';
 // Types
 import type { Action } from './$types';
 
 // Utils
 import db from '$lib/server/database';
-import { tokens, users } from '$lib/db/models/auth';
+import { Users } from '$models/user';
+import { Tokens } from '$models/token';
 import { eq } from 'drizzle-orm';
 import { error } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
@@ -12,21 +12,30 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { resetPasswordSchema } from '$lib/validations/auth';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
+import { Argon2id } from 'oslo/password';
 
-export async function load({ locals, params }) {
+export async function load({ locals, params, url }) {
   // redirect user if already logged in
-  if (locals.user) throw redirect(302, '/');
+  if (locals.user) redirect(302, '/');
 
-  const emailParam: string | null = params.email || null;
-  const tokenParam: string | null = params.token || null;
+  const userIdParam: string | null = params.userId || null;
+  const tokenParam: string | null = url.searchParams.get('token') || null;
+  let email: string | null = null;
 
-  if (emailParam && tokenParam) {
+  if (userIdParam && tokenParam) {
     try {
-      const token = await db.query.tokens.findFirst({
-        where: eq(tokens.id, tokenParam),
+      const token = await db.query.Tokens.findFirst({
+        where: eq(Tokens.key, tokenParam),
         columns: {
-          userId: true,
           expiresAt: true
+        },
+        with: {
+          user: {
+            columns: {
+              id: true,
+              email: true
+            }
+          }
         }
       });
 
@@ -37,14 +46,16 @@ export async function load({ locals, params }) {
       if (token.expiresAt < new Date(Date.now())) {
         error(400, 'Expired Token');
       }
+
+      email = token.user?.email ?? null;
     } catch (e: any) {
       error(e.status, e.body.message);
     }
   } else {
-    throw redirect(302, '/reset-password');
+    redirect(302, '/reset-password');
   }
 
-  const form = await superValidate({ email: emailParam, token: tokenParam }, zod(resetPasswordSchema), {
+  const form = await superValidate({ email: email ?? '', token: tokenParam }, zod(resetPasswordSchema), {
     errors: false
   });
 
@@ -79,11 +90,11 @@ const reset: Action = async (event) => {
     }
     try {
       await db
-        .update(users)
+        .update(Users)
         .set({
-          hashed_password: await new Argon2id().hash(password)
+          hashedPassword: await new Argon2id().hash(password)
         })
-        .where(eq(users.email, email));
+        .where(eq(Users.email, email));
     } catch (error) {
       return setFormError(
         form,
@@ -96,7 +107,7 @@ const reset: Action = async (event) => {
       );
     }
 
-    await db.delete(tokens).where(eq(tokens.id, token));
+    await db.delete(Tokens).where(eq(Tokens.key, token));
   }
 
   throw redirect(

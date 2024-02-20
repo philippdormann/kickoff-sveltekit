@@ -2,7 +2,7 @@
 import { type Action, fail } from '@sveltejs/kit';
 import { auth } from '$lib/server/auth';
 import db from '$lib/server/database';
-import { users } from '$lib/db/models/auth';
+import { Users } from '$models/user';
 import { eq } from 'drizzle-orm';
 import { superValidate } from 'sveltekit-superforms/server';
 import { zod } from 'sveltekit-superforms/adapters';
@@ -10,10 +10,7 @@ import { editAccountSchema } from '$lib/validations/auth';
 import { setFormError } from '$lib/utils/helpers/forms';
 import { redirect } from 'sveltekit-flash-message/server';
 
-export async function load({ locals }) {
-  // redirect to `/` if logged in
-  if (!locals.user) throw redirect(302, '/');
-
+export async function load() {
   const form = await superValidate(zod(editAccountSchema));
 
   return {
@@ -58,7 +55,7 @@ const edit: Action = async (event) => {
 
     if (avatar && typeof avatar === 'string') {
       try {
-        await db.update(users).set({ avatar }).where(eq(users.id, user.id));
+        await db.update(Users).set({ avatar }).where(eq(Users.id, user.id));
       } catch (error) {
         console.log(error);
         return setFormError(form, 'Something went wrong. Please try again later.', {
@@ -94,7 +91,7 @@ const cancel: Action = async (event) => {
     }
 
     try {
-      await db.delete(users).where(eq(users.id, user.id));
+      await db.delete(Users).where(eq(Users.id, user.id));
     } catch {
       throw redirect(
         {

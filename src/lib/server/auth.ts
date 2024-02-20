@@ -4,12 +4,13 @@ import { DrizzlePostgreSQLAdapter } from '@lucia-auth/adapter-drizzle';
 
 // Utils
 import db from '$lib/server/database';
-import { users, sessions } from '$lib/db/models/auth';
+import { Users } from '$models/user';
+import { Sessions } from '$models/session';
 
 // Stores
 import { dev } from '$app/environment';
 
-const adapter = new DrizzlePostgreSQLAdapter(db, sessions, users);
+const adapter = new DrizzlePostgreSQLAdapter(db, Sessions, Users);
 
 export const auth = new Lucia(adapter, {
   getUserAttributes: (attributes: DatabaseUserAttributes) => {
