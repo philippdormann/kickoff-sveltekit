@@ -72,15 +72,5 @@
     </div>
   {/if}
 
-  <form
-    id="logout"
-    action="/logout"
-    method="POST"
-    use:enhance={() => {
-      return async ({ result }) => {
-        await applyAction(result);
-        invalidateAll();
-      };
-    }}
-  />
+  <form id="logout" method="POST" action="/logout" />
 </nav>
