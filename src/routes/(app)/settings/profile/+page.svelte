@@ -186,10 +186,9 @@
     {/each}
   {/if}
 
-  <div class="my-2">
-    <Separator />
-  </div>
+  <Separator class="my-4" />
 
+  <h2 class="text-lg font-semibold">Danger Zone</h2>
   <AlertDialog.Root>
     <AlertDialog.Trigger class="w-full">
       <Button variant="destructive" class="my-2 w-full">Delete Account</Button>

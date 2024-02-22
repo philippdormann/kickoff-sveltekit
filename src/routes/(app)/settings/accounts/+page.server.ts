@@ -87,7 +87,6 @@ const createAccount: Action = async (event) => {
   }
 
   redirect(
-    `/settings/accounts`,
     {
       type: 'success',
       message: `You have successfully created an account.`
