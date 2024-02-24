@@ -1,6 +1,7 @@
 import type { RequestHandler } from '@sveltejs/kit';
 import { redirect } from 'sveltekit-flash-message/server';
 import { auth } from '$lib/server/auth';
+import * as m from '$lib/utils/messages';
 
 export const POST: RequestHandler = async (event) => {
   if (!event.locals.session) redirect(302, '/');
@@ -18,7 +19,7 @@ export const POST: RequestHandler = async (event) => {
       '/',
       {
         type: 'error',
-        message: 'Something went wrong. Please try again later.'
+        message: m.general.error
       },
       event
     );
@@ -28,7 +29,7 @@ export const POST: RequestHandler = async (event) => {
     '/',
     {
       type: 'success',
-      message: 'Logged out successfully'
+      message: m.logout.success
     },
     event
   );

@@ -9,6 +9,7 @@ import { superValidate } from 'sveltekit-superforms/server';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { eq } from 'drizzle-orm';
 import { Argon2id } from 'oslo/password';
+import * as m from '$lib/utils/messages';
 
 // Scehmas
 import { resetPasswordSchema } from '$lib/validations/auth';
@@ -84,7 +85,7 @@ const reset: Action = async (event) => {
     if (password !== passwordConfirmation) {
       return setFormError(
         form,
-        'Passswords do not match',
+        m.resetPassword.passwordsMismatch,
         {
           status: 400,
           field: 'passwordConfirmation'
@@ -102,7 +103,7 @@ const reset: Action = async (event) => {
     } catch (error) {
       return setFormError(
         form,
-        'Something went wrong. Please try again later.',
+        m.general.error,
         {
           status: 500,
           removeSensitiveData: ['password', 'passwordConfirmation']
@@ -118,7 +119,7 @@ const reset: Action = async (event) => {
     '/login',
     {
       type: 'success',
-      message: 'Password was reset successfully. You can now login.'
+      message: m.resetPassword.success
     },
     event
   );

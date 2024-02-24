@@ -11,6 +11,7 @@ import { eq } from 'drizzle-orm';
 import { sendEmail } from '$lib/utils/mail/mailer';
 import { Argon2id } from 'oslo/password';
 import { generateNanoId } from '$lib/utils/helpers/nanoid';
+import * as m from '$lib/utils/messages';
 
 // Schemas
 import { registrationSchema } from '$lib/validations/auth';
@@ -47,7 +48,7 @@ const register: Action = async (event) => {
     if (password !== passwordConfirmation) {
       return setFormError(
         form,
-        'Passwords do not match',
+        m.register.passwordsMismatch,
         {
           field: 'passwordConfirmation',
           removeSensitiveData: ['password', 'passwordConfirmation']
@@ -66,7 +67,7 @@ const register: Action = async (event) => {
     if (existingUser) {
       return setFormError(
         form,
-        'Email is already taken',
+        m.register.emailIsTaken,
         {
           field: 'email',
           removeSensitiveData: ['password', 'passwordConfirmation']
@@ -122,7 +123,7 @@ const register: Action = async (event) => {
 
       return setFormError(
         form,
-        'Something went wrong. Please try again later.',
+        m.general.error,
         {
           status: 500,
           removeSensitiveData: ['password', 'passwordConfirmation']
@@ -142,7 +143,7 @@ const register: Action = async (event) => {
       '/login',
       {
         type: 'success',
-        message: 'Registered successfully.'
+        message: m.register.success
       },
       event
     );

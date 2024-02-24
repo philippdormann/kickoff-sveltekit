@@ -1,6 +1,7 @@
 // Utils
 import { redirect } from 'sveltekit-flash-message/server';
 import { eq } from 'drizzle-orm';
+import * as m from '$lib/utils/messages';
 
 // Database
 import db from '$lib/server/database';
@@ -9,13 +10,13 @@ import { UsersAccounts } from '$models/account';
 
 export const load = async (event) => {
   if (!event.locals.user) {
-    redirect('/login', { type: 'error', message: 'Please login to view this page' }, event);
+    redirect('/login', { type: 'error', message: m.general.unauthorized }, event);
   }
 
   const accountId = event.url.searchParams.get('account');
   const inviteToken = event.url.searchParams.get('token');
   if (!inviteToken || !accountId) {
-    redirect('/', { type: 'error', message: 'Invalid Invite URL' }, event);
+    redirect('/', { type: 'error', message: m.accounts.invite.recieve.invalidUrl }, event);
   }
 
   const invite = await db.query.Invites.findFirst({
@@ -23,21 +24,21 @@ export const load = async (event) => {
   });
 
   if (!invite) {
-    redirect('/', { type: 'error', message: 'Invalid Invite URL' }, event);
+    redirect('/', { type: 'error', message: m.accounts.invite.recieve.invalidUrl }, event);
   }
 
   if (invite.email !== event.locals.user?.email) {
-    redirect('/', { type: 'error', message: 'Invalid Invite URL' }, event);
+    redirect('/', { type: 'error', message: m.accounts.invite.recieve.invalidUrl }, event);
   }
 
   if (invite.status !== 'pending') {
-    redirect('/', { type: 'error', message: 'Invite was already accepted' }, event);
+    redirect('/', { type: 'error', message: m.accounts.invite.recieve.claimed }, event);
   }
 
   if (invite.expiresAt < new Date(Date.now())) {
     await db.update(Invites).set({ status: 'expired' }).where(eq(Invites.id, invite.id));
 
-    redirect('/', { type: 'error', message: 'Invite URL is expired' }, event);
+    redirect('/', { type: 'error', message: m.accounts.invite.recieve.expiredUrl }, event);
   }
 
   try {
@@ -61,7 +62,7 @@ export const load = async (event) => {
       '/',
       {
         type: 'error',
-        message: 'Something went wrong. Please try again later.'
+        message: m.general.error
       },
       event
     );
@@ -71,7 +72,7 @@ export const load = async (event) => {
     '/settings/accounts',
     {
       type: 'success',
-      message: 'Invite was claimed successfully.'
+      message: m.accounts.invite.recieve.success
     },
     event
   );

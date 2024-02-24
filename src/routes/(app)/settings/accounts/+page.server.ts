@@ -7,6 +7,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import { setFormFail } from '$lib/utils/helpers/forms';
 import { and, eq } from 'drizzle-orm';
+import * as m from '$lib/utils/messages';
 
 // Schemas
 import { createAccountSchema } from '$lib/validations/account';
@@ -18,7 +19,7 @@ import { Accounts, UsersAccounts } from '$models/account';
 
 export const load = async (event) => {
   if (!event.locals.user) {
-    redirect('/login', { type: 'error', message: 'Please login to view this page' }, event);
+    redirect('/login', { type: 'error', message: m.general.unauthorized }, event);
   }
 
   const getUserAccounts = await db.query.Users.findFirst({
@@ -80,7 +81,7 @@ const createAccount: Action = async (event) => {
     redirect(
       {
         type: 'error',
-        message: 'Something went wrong. Please try again later.'
+        message: m.general.error
       },
       event
     );
@@ -89,7 +90,7 @@ const createAccount: Action = async (event) => {
   redirect(
     {
       type: 'success',
-      message: `You have successfully created an account.`
+      message: m.accounts.create.success
     },
     event
   );

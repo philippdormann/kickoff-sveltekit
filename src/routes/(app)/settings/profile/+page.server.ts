@@ -9,6 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import { setFormError } from '$lib/utils/helpers/forms';
 import { eq } from 'drizzle-orm';
+import * as m from '$lib/utils/messages';
 
 // Schemas
 import { editUserSchema } from '$lib/validations/auth';
@@ -20,7 +21,7 @@ import { UsersAccounts, Accounts } from '$models/account';
 
 export async function load(event) {
   if (!event.locals.user) {
-    redirect('/login', { type: 'error', message: 'Please login to view this page' }, event);
+    redirect('/login', { type: 'error', message: m.general.unauthorized }, event);
   }
 
   const form = await superValidate(zod(editUserSchema), {
@@ -47,7 +48,7 @@ const editUser: Action = async (event) => {
       redirect(
         {
           type: 'error',
-          message: 'You are not logged in'
+          message: m.general.unauthorized
         },
         event
       );
@@ -59,7 +60,7 @@ const editUser: Action = async (event) => {
       redirect(
         {
           type: 'warning',
-          message: 'No changes were made. Nothing to update.'
+          message: m.userProfile.edit.noChanges
         },
         event
       );
@@ -72,21 +73,21 @@ const editUser: Action = async (event) => {
         await db.update(Users).set({ avatar }).where(eq(Users.id, user.id));
       } catch (error) {
         console.log(error);
-        return setFormError(form, 'Something went wrong. Please try again later.', {
+        return setFormError(form, m.general.error, {
           status: 500,
           field: 'avatar'
         });
       }
     }
 
-    redirect({ type: 'success', message: 'Account updated' }, event);
+    redirect({ type: 'success', message: m.userProfile.edit.success }, event);
   }
 };
 
 const deleteUser: Action = async (event) => {
   const user = event.locals.user;
 
-  if (!user) redirect('/', { type: 'error', message: 'You are not logged in' }, event);
+  if (!user) redirect('/', { type: 'error', message: m.general.unauthorized }, event);
 
   try {
     try {
@@ -100,7 +101,7 @@ const deleteUser: Action = async (event) => {
       redirect(
         {
           type: 'error',
-          message: 'Something went wrong. Please try again later.'
+          message: m.general.error
         },
         event
       );
@@ -116,13 +117,13 @@ const deleteUser: Action = async (event) => {
     redirect(
       {
         type: 'error',
-        message: 'Something went wrong. Please try again later.'
+        message: m.general.error
       },
       event
     );
   }
 
-  redirect('/', { type: 'success', message: 'Account deleted.' }, event);
+  redirect('/', { type: 'success', message: m.userProfile.delete.success }, event);
 };
 
 export const actions = { editUser, deleteUser };

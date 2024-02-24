@@ -9,6 +9,7 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { eq } from 'drizzle-orm';
 import { Argon2id } from 'oslo/password';
+import * as m from '$lib/utils/messages';
 
 // Schemas
 import { loginSchema } from '$lib/validations/auth';
@@ -47,7 +48,7 @@ const login: Action = async (event) => {
       if (!user) {
         return setFormError(
           form,
-          'Incorrect email or password',
+          m.login.error,
           {
             status: 401,
             field: 'email',
@@ -62,7 +63,7 @@ const login: Action = async (event) => {
       if (!validPassword) {
         return setFormError(
           form,
-          'Incorrect email or password',
+          m.login.error,
           {
             status: 401,
             field: 'email',
@@ -81,7 +82,7 @@ const login: Action = async (event) => {
     } catch (e: any) {
       return setFormError(
         form,
-        'Something went wrong. Please try again later.',
+        m.general.error,
         {
           status: 500,
           removeSensitiveData: ['password']
@@ -95,7 +96,7 @@ const login: Action = async (event) => {
     '/',
     {
       type: 'success',
-      message: 'Logged in successfully'
+      message: m.login.success
     },
     event
   );

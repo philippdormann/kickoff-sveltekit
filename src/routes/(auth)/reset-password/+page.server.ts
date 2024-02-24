@@ -14,6 +14,7 @@ import { eq } from 'drizzle-orm';
 import { sendEmail } from '$lib/utils/mail/mailer';
 import { Argon2id } from 'oslo/password';
 import { generateNanoId } from '$lib/utils/helpers/nanoid';
+import * as m from '$lib/utils/messages';
 
 // Schemas
 import { requestPasswordResetSchema } from '$lib/validations/auth';
@@ -59,7 +60,7 @@ const requestPasswordReset: Action = async (event) => {
       '/',
       {
         type: 'success',
-        message: 'An email has been sent to reset your password!'
+        message: m.requestResetPassword.success
       },
       event
     );
@@ -94,7 +95,7 @@ const requestPasswordReset: Action = async (event) => {
     await sendEmail(email, 'Reset Password', 'ResetPassword', { url: url });
   } catch (error) {
     console.log(error);
-    return setFormError(form, 'Something went wrong. Please try again later.', {
+    return setFormError(form, m.general.error, {
       status: 500
     });
   }
@@ -103,7 +104,7 @@ const requestPasswordReset: Action = async (event) => {
     '/',
     {
       type: 'success',
-      message: 'An email has been sent to reset your password!'
+      message: m.requestResetPassword.success
     },
     event
   );

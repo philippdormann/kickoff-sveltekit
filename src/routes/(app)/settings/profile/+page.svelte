@@ -10,6 +10,7 @@
   import { error } from '@sveltejs/kit';
   import { validateAvatarFile } from '$lib/validations/files';
   import { toast } from 'svelte-sonner';
+  import * as m from '$lib/utils/messages';
 
   // Components
   import * as Form from '$components/ui/form';
@@ -197,8 +198,7 @@
       <AlertDialog.Header>
         <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
         <AlertDialog.Description>
-          This action cannot be undone. Are you sure you want to delete your account and remove your data from our
-          servers?
+          {m.userProfile.delete.destructiveOperation}
         </AlertDialog.Description>
       </AlertDialog.Header>
       <AlertDialog.Footer>

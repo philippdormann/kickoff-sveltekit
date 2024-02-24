@@ -11,6 +11,7 @@ import { superValidate } from 'sveltekit-superforms/client';
 import { setFormFail, setFormError } from '$lib/utils/helpers/forms';
 import { and, eq } from 'drizzle-orm';
 import { sendEmail } from '$lib/utils/mail/mailer';
+import * as m from '$lib/utils/messages';
 
 // Schemas
 import { createAccountInviteSchema, deleteAccountSchema, leaveAccountSchema } from '$lib/validations/account';
@@ -22,7 +23,7 @@ import { Invites } from '$models/invite';
 
 export const load = async (event) => {
   if (!event.locals.user) {
-    redirect('/login', { type: 'error', message: 'Please login to view this page' }, event);
+    redirect('/login', { type: 'error', message: m.general.unauthorized }, event);
   }
 
   const account = await db.query.Accounts.findFirst({
@@ -47,19 +48,15 @@ export const load = async (event) => {
   });
 
   if (!account) {
-    redirect('/', { type: 'error', message: 'Account not found' }, event);
+    redirect('/', { type: 'error', message: m.accounts.notFound }, event);
   }
 
   if (!account.members.find((m) => m.userId === event.locals.user?.id)) {
-    redirect('/', { type: 'error', message: 'You are not a member of this account' }, event);
+    redirect('/', { type: 'error', message: m.accounts.unauthorized }, event);
   }
 
   const createAccountInviteForm = await superValidate({ accountId: account.id }, zod(createAccountInviteSchema), {
     id: 'create-account-invite-form',
-    errors: false
-  });
-  const deleteAccountForm = await superValidate({ accountId: account.id }, zod(deleteAccountSchema), {
-    id: 'delete-account-form',
     errors: false
   });
 
@@ -67,11 +64,16 @@ export const load = async (event) => {
     id: 'leave-account-form'
   });
 
+  const deleteAccountForm = await superValidate({ accountId: account.id }, zod(deleteAccountSchema), {
+    id: 'delete-account-form',
+    errors: false
+  });
+
   return {
     account,
     createAccountInviteForm,
-    deleteAccountForm,
-    leaveAccountForm
+    leaveAccountForm,
+    deleteAccountForm
   };
 };
 
@@ -86,7 +88,7 @@ const createAccountInvite: Action = async (event) => {
 
   if (accountId && email) {
     if (email === event.locals.user?.email) {
-      return setFormError(createAccountInviteForm, 'You are already a member of this account.', {
+      return setFormError(createAccountInviteForm, m.accounts.invite.send.alreadyMember, {
         status: 500,
         field: 'email'
       });
@@ -115,12 +117,12 @@ const createAccountInvite: Action = async (event) => {
     } catch (error) {
       console.log(error);
 
-      return setFormError(createAccountInviteForm, 'Something went wrong. Please try again later.', {
+      return setFormError(createAccountInviteForm, m.general.error, {
         status: 500
       });
     }
 
-    redirect({ type: 'success', message: `An invite has been sent to ${email}!` }, event);
+    redirect({ type: 'success', message: `An invite has been sent to ${email}` }, event);
   }
 };
 
@@ -141,13 +143,13 @@ const leaveAccount: Action = async (event) => {
     redirect(
       {
         type: 'error',
-        message: 'Something went wrong. Please try again later.'
+        message: m.general.error
       },
       event
     );
   }
 
-  redirect('/settings/accounts', { type: 'success', message: 'You have successfully left the account.' }, event);
+  redirect('/settings/accounts', { type: 'success', message: m.accounts.leave.success }, event);
 };
 
 const deleteAccount: Action = async (event) => {
@@ -165,12 +167,12 @@ const deleteAccount: Action = async (event) => {
     } catch (error) {
       console.log(error);
 
-      return setFormError(deleteAccountForm, 'Something went wrong. Please try again later.', {
+      return setFormError(deleteAccountForm, m.general.error, {
         status: 500
       });
     }
 
-    redirect('/settings/accounts', { type: 'success', message: 'Account was successfully deleted!' }, event);
+    redirect('/settings/accounts', { type: 'success', message: m.accounts.delete.success }, event);
   }
 };
 

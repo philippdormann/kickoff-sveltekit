@@ -7,6 +7,7 @@
   import { zodClient } from 'sveltekit-superforms/adapters';
   import { createAccountInviteSchema, deleteAccountSchema } from '$lib/validations/account';
   import * as flashModule from 'sveltekit-flash-message/client';
+  import * as m from '$lib/utils/messages';
 
   // Components
   import * as Form from '$components/ui/form';
@@ -81,7 +82,7 @@
   <ul class="flex w-full flex-wrap gap-4 pt-2">
     {#each data.account.members as member}
       <li class="flex flex-col items-center justify-center">
-        <Avatar.Root class="ring-border ring-2">
+        <Avatar.Root class="ring-2 ring-border">
           {#if member.user.avatar}
             <Avatar.Image src={`${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${member.user.avatar}`} alt={member.user.email} />
           {/if}
@@ -94,66 +95,43 @@
 </div>
 
 {#if data.account.type !== 'personal'}
-  {#if data.account.members.find((member) => member.userId === data.user?.id && member.role === 'admin')}
-    <Separator class="my-4" />
-    <h2 class="text-lg font-semibold">Invite a new member</h2>
-    <form
-      id="invite-form-{data.account.id}"
-      method="POST"
-      action="?/createAccountInvite"
-      use:createAccountInviteFormEnhance
-    >
-      <Input type="hidden" name="accountId" value={$createAccountInviteFormData.accountId} />
-      <Form.Field form={createAccountInviteForm} name="email" let:constraints>
-        <Form.Control let:attrs>
-          <Form.Label hidden>Email</Form.Label>
-          <Input
-            type="email"
-            autocapitalize="none"
-            autocorrect="off"
-            autocomplete="username"
-            bind:value={$createAccountInviteFormData.email}
-            {...attrs}
-            {...constraints}
-          />
-          <Form.FieldErrors />
-        </Form.Control>
-      </Form.Field>
+  <Separator class="my-4" />
+  <h2 class="text-lg font-semibold">Invite a new member</h2>
+  <form
+    id="invite-form-{data.account.id}"
+    method="POST"
+    action="?/createAccountInvite"
+    use:createAccountInviteFormEnhance
+  >
+    <Input type="hidden" name="accountId" value={$createAccountInviteFormData.accountId} />
+    <Form.Field form={createAccountInviteForm} name="email" let:constraints>
+      <Form.Control let:attrs>
+        <Form.Label hidden>Email</Form.Label>
+        <Input
+          type="email"
+          autocapitalize="none"
+          autocorrect="off"
+          autocomplete="username"
+          bind:value={$createAccountInviteFormData.email}
+          {...attrs}
+          {...constraints}
+        />
+        <Form.FieldErrors />
+      </Form.Control>
+    </Form.Field>
 
-      <Form.Button type="submit" disabled={$createAccountInviteFormDelayed} class="my-2 w-full">
-        {#if $createAccountInviteFormDelayed}
-          <Reload class="mr-2 h-4 w-4 animate-spin" />
-        {/if}
-        Invite
-      </Form.Button>
-    </form>
+    <Form.Button type="submit" disabled={$createAccountInviteFormDelayed} class="my-2 w-full">
+      {#if $createAccountInviteFormDelayed}
+        <Reload class="mr-2 h-4 w-4 animate-spin" />
+      {/if}
+      Invite
+    </Form.Button>
+  </form>
 
-    <Separator class="my-4" />
+  <Separator class="my-4" />
 
-    <h2 class="text-lg font-semibold">Danger Zone</h2>
-    <form id="leave-account-form" method="POST" action="?/leaveAccount" use:leaveAccountFormEnhance>
-      <Form.Field form={leaveAccountForm} name="accountId">
-        <Form.Control let:attrs>
-          <Form.Label hidden>Account ID</Form.Label>
-          <Input type="hidden" bind:value={data.account.id} {...attrs} />
-        </Form.Control>
-      </Form.Field>
-
-      <Form.Field form={leaveAccountForm} name="userId">
-        <Form.Control let:attrs>
-          <Form.Label hidden>User ID</Form.Label>
-          <Input type="hidden" value={data.user?.id} {...attrs} />
-        </Form.Control>
-      </Form.Field>
-
-      <Form.Button type="submit" variant="destructive" disabled={$leaveAccountFormDelayed} class="my-2 w-full">
-        {#if $leaveAccountFormDelayed}
-          <Reload class="mr-2 h-4 w-4 animate-spin" />
-        {/if}
-        Leave Account
-      </Form.Button>
-    </form>
-
+  <h2 class="text-lg font-semibold">Danger Zone</h2>
+  {#if data.account.members.find((m) => m.userId === data.user?.id && m.role === 'admin')}
     <AlertDialog.Root>
       <AlertDialog.Trigger class="w-full">
         <Button variant="destructive" class="my-2 w-full">Delete Team Account</Button>
@@ -162,8 +140,7 @@
         <AlertDialog.Header>
           <AlertDialog.Title>Are you absolutely sure?</AlertDialog.Title>
           <AlertDialog.Description>
-            This action cannot be undone. Are you sure you want to delete the account and remove its data from our
-            servers?
+            {m.accounts.delete.destructiveOperation}
           </AlertDialog.Description>
         </AlertDialog.Header>
         <AlertDialog.Footer>
@@ -194,5 +171,28 @@
         </AlertDialog.Footer>
       </AlertDialog.Content>
     </AlertDialog.Root>
+  {:else}
+    <form id="leave-account-form" method="POST" action="?/leaveAccount" use:leaveAccountFormEnhance>
+      <Form.Field form={leaveAccountForm} name="accountId">
+        <Form.Control let:attrs>
+          <Form.Label hidden>Account ID</Form.Label>
+          <Input type="hidden" bind:value={data.account.id} {...attrs} />
+        </Form.Control>
+      </Form.Field>
+
+      <Form.Field form={leaveAccountForm} name="userId">
+        <Form.Control let:attrs>
+          <Form.Label hidden>User ID</Form.Label>
+          <Input type="hidden" value={data.user?.id} {...attrs} />
+        </Form.Control>
+      </Form.Field>
+
+      <Form.Button type="submit" variant="destructive" disabled={$leaveAccountFormDelayed} class="my-2 w-full">
+        {#if $leaveAccountFormDelayed}
+          <Reload class="mr-2 h-4 w-4 animate-spin" />
+        {/if}
+        Leave Account
+      </Form.Button>
+    </form>
   {/if}
 {/if}
