@@ -1,6 +1,6 @@
 # Kickoff SvelteKit
 
-![Kickoff Sveltekit](https://ks.ns-projects.com/_app/immutable/assets/meta_image.a5GzMYma.png)
+![Kickoff Sveltekit](https://res.cloudinary.com/nshemesh/image/upload/v1708796561/Kickoff%20SvelteKit/meta_image.png)
 
 Welcome to Kickoff SvelteKit, a starter project to get up and running with SvelteKit🚀
 
