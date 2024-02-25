@@ -8,6 +8,7 @@ export const createAccountSchema = z.object({
     .trim()
     .min(6, { message: 'Account name must be at least 6 characters' })
     .max(64, { message: 'Account name must be less than 64 characters' })
+    .regex(/^[a-zA-Z0-9\s]+$/, { message: 'Account name can only contain letters, numbers, and spaces' })
 });
 
 // Delete Account Form Validation

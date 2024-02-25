@@ -6,7 +6,13 @@ export const registrationSchema = z.object({
     .string({ required_error: 'Email is required' })
     .trim()
     .max(64, { message: 'Email must be less than 64 characters' })
-    .email({ message: 'Email is invalid' }),
+    .email({ message: 'Email is invalid' })
+    .refine(
+      (value) => {
+        return !value.includes('test');
+      },
+      { message: 'Test emails are not allowed' }
+    ),
   password: z
     .string({ required_error: 'Password is required' })
     .trim()
