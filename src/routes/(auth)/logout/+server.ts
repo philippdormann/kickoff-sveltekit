@@ -18,6 +18,7 @@ export const POST: RequestHandler = async (event) => {
     redirect(
       '/',
       {
+        status: 500,
         type: 'error',
         message: m.general.error
       },

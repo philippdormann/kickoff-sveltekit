@@ -180,6 +180,7 @@ const leaveAccount: Action = async (event) => {
   } catch (error) {
     redirect(
       {
+        status: 500,
         type: 'error',
         message: m.general.error
       },

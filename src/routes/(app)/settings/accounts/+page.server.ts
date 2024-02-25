@@ -80,6 +80,7 @@ const createAccount: Action = async (event) => {
     console.log(error);
     redirect(
       {
+        status: 500,
         type: 'error',
         message: m.general.error
       },

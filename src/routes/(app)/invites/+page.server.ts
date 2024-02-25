@@ -61,6 +61,7 @@ export const load = async (event) => {
     redirect(
       '/',
       {
+        status: 500,
         type: 'error',
         message: m.general.error
       },
