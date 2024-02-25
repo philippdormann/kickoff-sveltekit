@@ -24,7 +24,7 @@
 
   const createAccountInviteForm = superForm(data.createAccountInviteForm, {
     validators: zodClient(createAccountInviteSchema),
-    invalidateAll: true,
+    invalidateAll: 'force',
     delayMs: 500,
     multipleSubmits: 'prevent',
     syncFlashMessage: false,
@@ -41,7 +41,7 @@
 
   const deleteAccountForm = superForm(data.deleteAccountForm, {
     validators: zodClient(deleteAccountSchema),
-    invalidateAll: true,
+    invalidateAll: 'force',
     delayMs: 500,
     multipleSubmits: 'prevent',
     syncFlashMessage: false,
@@ -82,7 +82,7 @@
   <ul class="flex w-full flex-wrap gap-4 pt-2">
     {#each data.account.members as member}
       <li class="flex flex-col items-center justify-center">
-        <Avatar.Root class="ring-border ring-2">
+        <Avatar.Root class="ring-2 ring-border">
           {#if member.user.avatar}
             <Avatar.Image src={`${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${member.user.avatar}`} alt={member.user.email} />
           {/if}

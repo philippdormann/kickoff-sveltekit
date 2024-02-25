@@ -22,7 +22,7 @@
 
   const form = superForm(data.form, {
     validators: zodClient(createAccountSchema),
-    invalidateAll: true,
+    invalidateAll: 'force',
     multipleSubmits: 'prevent',
     syncFlashMessage: false,
     flashMessage: {
@@ -37,14 +37,14 @@
   <div class="grid gap-2">
     {#each data.userAccounts as userAccount}
       <a href="/settings/accounts/{userAccount.account.publicId}">
-        <div class="border-primary rounded-xl border-2 p-4 shadow-sm">
+        <div class="rounded-xl border-2 border-primary p-4 shadow-sm">
           <div class="flex items-center justify-between">
             <h1 class="text-xl font-semibold">{userAccount.account.name}</h1>
             <Badge variant="outline">{userAccount.account.type}</Badge>
           </div>
           <div class="flex gap-2 py-4">
             {#each userAccount.account.members as member}
-              <Avatar.Root class="ring-border z-50 ring-2">
+              <Avatar.Root class="z-50 ring-2 ring-border">
                 {#if member.user.avatar}
                   <Avatar.Image
                     src={`${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${member.user.avatar}`}
