@@ -118,14 +118,16 @@
         <p class="text-secondary-foreground">{data.account.type} account</p>
       </div>
 
-      <Button
-        variant="secondary"
-        on:click={() => {
-          isEditMode = true;
-        }}
-      >
-        <Pencil2 class="size-5" />
-      </Button>
+      {#if data.account.type !== 'personal'}
+        <Button
+          variant="secondary"
+          on:click={() => {
+            isEditMode = true;
+          }}
+        >
+          <Pencil2 class="size-5" />
+        </Button>
+      {/if}
     </div>
   {/if}
 </div>
@@ -135,7 +137,7 @@
   <ul class="flex w-full flex-wrap gap-4 pt-2">
     {#each data.account.members as member}
       <li class="flex flex-col items-center justify-center">
-        <Avatar.Root class="ring-2 ring-border">
+        <Avatar.Root class="ring-border ring-2">
           {#if member.user.avatar}
             <Avatar.Image src={`${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${member.user.avatar}`} alt={member.user.email} />
           {/if}
