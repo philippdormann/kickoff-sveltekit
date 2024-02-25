@@ -203,15 +203,18 @@
       </AlertDialog.Header>
       <AlertDialog.Footer>
         <AlertDialog.Cancel>Back to safety</AlertDialog.Cancel>
-        <AlertDialog.Action class="bg-destructive/90 text-destructive-foreground hover:bg-destructive">
+        <AlertDialog.Action
+          type="submit"
+          form="delete-user-form"
+          class="bg-destructive/90 text-destructive-foreground hover:bg-destructive"
+        >
+          Continue
           <form
             id="delete-user-form"
             action="?/deleteUser"
             method="POST"
             class="mx-auto flex w-full flex-col items-center justify-center"
-          >
-            <button type="submit">Continue</button>
-          </form>
+          ></form>
         </AlertDialog.Action>
       </AlertDialog.Footer>
     </AlertDialog.Content>

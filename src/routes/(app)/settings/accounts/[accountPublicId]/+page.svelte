@@ -82,7 +82,7 @@
   <ul class="flex w-full flex-wrap gap-4 pt-2">
     {#each data.account.members as member}
       <li class="flex flex-col items-center justify-center">
-        <Avatar.Root class="ring-2 ring-border">
+        <Avatar.Root class="ring-border ring-2">
           {#if member.user.avatar}
             <Avatar.Image src={`${PUBLIC_AWS_S3_BUCKET_URL}/avatars/${member.user.avatar}`} alt={member.user.email} />
           {/if}
@@ -145,13 +145,13 @@
         </AlertDialog.Header>
         <AlertDialog.Footer>
           <AlertDialog.Cancel>Back to safety</AlertDialog.Cancel>
-          <AlertDialog.Action class="bg-destructive/90 text-destructive-foreground hover:bg-destructive">
-            <form
-              id="delete-account-form-{data.account.id}"
-              method="POST"
-              action="?/deleteAccount"
-              use:deleteAccountFormEnhance
-            >
+          <AlertDialog.Action
+            type="submit"
+            form="delete-account-form"
+            class="bg-destructive/90 text-destructive-foreground hover:bg-destructive"
+          >
+            Continue
+            <form id="delete-account-form" method="POST" action="?/deleteAccount" use:deleteAccountFormEnhance>
               <Form.Field form={deleteAccountForm} name="accountId" class="space-y-0">
                 <Form.Control let:attrs>
                   <Form.Label hidden>Account ID</Form.Label>
@@ -159,13 +159,6 @@
                   <Form.FieldErrors />
                 </Form.Control>
               </Form.Field>
-
-              <button type="submit" disabled={$deleteAccountFormDelayed}>
-                {#if $deleteAccountFormDelayed}
-                  <Reload class="mr-2 h-4 w-4 animate-spin" />
-                {/if}
-                Continue
-              </button>
             </form>
           </AlertDialog.Action>
         </AlertDialog.Footer>
