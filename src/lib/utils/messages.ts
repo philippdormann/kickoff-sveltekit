@@ -48,6 +48,10 @@ export const accounts = {
   create: {
     success: 'You have successfully created an account'
   },
+  edit: {
+    success: 'Account was updated successfully',
+    noChanges: 'No changes were made. Nothing to update'
+  },
   invite: {
     send: {
       success: 'An invite has been sent to the user',

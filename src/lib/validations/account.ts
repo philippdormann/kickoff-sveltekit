@@ -11,6 +11,17 @@ export const createAccountSchema = z.object({
     .regex(/^[a-zA-Z0-9\s]+$/, { message: 'Account name can only contain letters, numbers, and spaces' })
 });
 
+// Edit Account Form Validation
+export const editAccountSchema = z.object({
+  accountId: z.number({ required_error: 'Account is required' }).nonnegative(),
+  name: z
+    .string({ required_error: 'Name is required' })
+    .trim()
+    .min(6, { message: 'Account name must be at least 6 characters' })
+    .max(64, { message: 'Account name must be less than 64 characters' })
+    .regex(/^[a-zA-Z0-9\s]+$/, { message: 'Account name can only contain letters, numbers, and spaces' })
+});
+
 // Delete Account Form Validation
 export const deleteAccountSchema = z.object({
   accountId: z.number({ required_error: 'Account is required' }).nonnegative()

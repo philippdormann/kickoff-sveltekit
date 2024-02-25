@@ -14,7 +14,12 @@ import { sendEmail } from '$lib/utils/mail/mailer';
 import * as m from '$lib/utils/messages';
 
 // Schemas
-import { createAccountInviteSchema, deleteAccountSchema, leaveAccountSchema } from '$lib/validations/account';
+import {
+  createAccountInviteSchema,
+  editAccountSchema,
+  leaveAccountSchema,
+  deleteAccountSchema
+} from '$lib/validations/account';
 
 // Database
 import db from '$lib/server/database';
@@ -60,6 +65,11 @@ export const load = async (event) => {
     errors: false
   });
 
+  const editAccountForm = await superValidate({ accountId: account.id, name: account.name }, zod(editAccountSchema), {
+    id: 'edit-account-form',
+    errors: false
+  });
+
   const leaveAccountForm = await superValidate(zod(leaveAccountSchema), {
     id: 'leave-account-form'
   });
@@ -72,6 +82,7 @@ export const load = async (event) => {
   return {
     account,
     createAccountInviteForm,
+    editAccountForm,
     leaveAccountForm,
     deleteAccountForm
   };
@@ -126,6 +137,33 @@ const createAccountInvite: Action = async (event) => {
   }
 };
 
+const editAccount: Action = async (event) => {
+  const editAccountForm = await superValidate(event.request, zod(editAccountSchema));
+
+  if (!editAccountForm.valid) {
+    return setFormFail(editAccountForm);
+  }
+
+  const { accountId, name } = editAccountForm.data;
+
+  if (accountId && name) {
+    try {
+      await db.update(Accounts).set({ name: name }).where(eq(Accounts.id, accountId));
+    } catch (error) {
+      redirect(
+        {
+          status: 500,
+          type: 'error',
+          message: m.general.error
+        },
+        event
+      );
+    }
+
+    redirect({ type: 'success', message: m.accounts.edit.success }, event);
+  }
+};
+
 const leaveAccount: Action = async (event) => {
   const leaveAccountForm = await superValidate(event.request, zod(leaveAccountSchema));
 
@@ -176,4 +214,4 @@ const deleteAccount: Action = async (event) => {
   }
 };
 
-export const actions: Actions = { createAccountInvite, leaveAccount, deleteAccount };
+export const actions: Actions = { createAccountInvite, editAccount, leaveAccount, deleteAccount };
