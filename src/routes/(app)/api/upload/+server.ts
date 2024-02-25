@@ -17,13 +17,13 @@ export const POST: RequestHandler = async ({ request }) => {
 
     const fileName = crypto.randomBytes(16).toString('hex');
 
-    const fil = {
+    const file = {
       Bucket: PUBLIC_AWS_S3_BUCKET_NAME,
       Key: `${destinationDirectory}/${fileName}`,
       ContentType: fileType
     };
 
-    const command = new PutObjectCommand(fil);
+    const command = new PutObjectCommand(file);
     const url = await getSignedUrl(s3, command, { expiresIn: 60000 });
 
     return json({
