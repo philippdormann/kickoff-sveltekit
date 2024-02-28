@@ -6,7 +6,7 @@ import { redirect } from 'sveltekit-flash-message/server';
 import { zod } from 'sveltekit-superforms/adapters';
 import { superValidate } from 'sveltekit-superforms/server';
 import { setFormFail } from '$lib/utils/helpers/forms';
-import { and, eq } from 'drizzle-orm';
+import { eq } from 'drizzle-orm';
 import * as m from '$lib/utils/messages';
 
 // Schemas
