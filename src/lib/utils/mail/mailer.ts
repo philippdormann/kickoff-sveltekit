@@ -1,8 +1,8 @@
 // Env Variables
-import { SENDGRID_API_KEY, EMAIL_SENDER } from '$env/static/private';
+import { EMAIL_SENDER, EMAIL_HOST, EMAIL_PASSWORD } from '$env/static/private';
 
 // Utils
-import sendgrid from '@sendgrid/mail';
+import { createTransport } from 'nodemailer';
 import { fail } from '@sveltejs/kit';
 import { render } from 'svelte-email';
 
@@ -13,7 +13,15 @@ import AccountInviteTemplate from '$lib/utils/mail/templates/AccountInvite.svelt
 
 export const sendEmail = async (to: string, subject: string, templateName: string, templateData?: any) => {
   if (to && subject && templateName) {
-    sendgrid.setApiKey(SENDGRID_API_KEY);
+    const transporter = createTransport({
+      host: EMAIL_HOST,
+      port: 465,
+      secure: true,
+      auth: {
+        user: EMAIL_SENDER,
+        pass: EMAIL_PASSWORD,
+      },
+    });
 
     let html;
 
@@ -50,7 +58,7 @@ export const sendEmail = async (to: string, subject: string, templateName: strin
       html
     };
 
-    await sendgrid.send(options);
+    await transporter.sendMail(options);
     console.log('Email sent successfully');
   }
 };

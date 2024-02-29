@@ -30,7 +30,7 @@ Clone this repository, install dependencies, set your environment variables (ref
 - [💾 Drizzle ORM (PostgreSQL)](https://orm.drizzle.team/)
 - [🎨 shadcn-svelte](https://www.shadcn-svelte.com/)
 - [👥 Lucia (Registraion, Login/Logout, Password Reset)](https://lucia-auth.com/)
-- [📬 SendGrid API](https://sendgrid.com/en-us)
+- [📬 Nodemailer](https://nodemailer.com)
 - [⛔ Zod](https://zod.dev/)
 - [📄 SvelteKit SuperForms](https://superforms.rocks/)
 - [📁 AWS S3](https://aws.amazon.com/s3/)
